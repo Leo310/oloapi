@@ -1,6 +1,7 @@
 package util
 
 import (
+	"log"
 	db "oloapi/database"
 	"oloapi/models"
 	"os"
@@ -83,15 +84,29 @@ func GenerateRefreshClaims(cl *models.Claims) string {
 // SecureAuth returns a middleware which secures all the private routes
 func SecureAuth() func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		accessToken := c.Cookies("access_token")
+		accessToken := c.Cookies("access_token", "no_token")
 		claims := new(models.Claims)
+
+		if accessToken == "no_token" {
+			log.Println(`Couldn't find "access_token" cookie. Checking Authorization header.`)
+			authHeaderContent := c.Get("Authorization", "no_token")
+			length := len(authHeaderContent)
+			accessToken = authHeaderContent[7:length]
+		}
+
+		if accessToken == "no_token" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error":   true,
+				"general": "Token unavailable",
+			})
+		}
 
 		token, err := jwt.ParseWithClaims(accessToken, claims,
 			func(token *jwt.Token) (interface{}, error) {
 				return jwtKey, nil
 			})
 
-		if token.Valid {
+		if token != nil && token.Valid {
 			if claims.ExpiresAt < time.Now().Unix() {
 				return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 					"error":   true,
@@ -105,7 +120,10 @@ func SecureAuth() func(*fiber.Ctx) error {
 				return c.SendStatus(fiber.StatusForbidden)
 			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
 				// Token is either expired or not active yet
-				return c.SendStatus(fiber.StatusUnauthorized)
+				return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+					"error":   true,
+					"general": "Token is either expired or not active yet",
+				})
 			} else {
 				// cannot handle this token
 				c.ClearCookie("access_token", "refresh_token")
