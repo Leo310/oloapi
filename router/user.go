@@ -24,6 +24,7 @@ func SetupUserRoutes() {
 	USER.Get("/get-access-token", GetAccessToken) // returns a new access_token
 
 	PRIVATE.Get("/user/:id?", GetUserData)
+	PRIVATE.Get("/user/follow/:id", FollowUser)
 }
 
 // CreateUser route registers a User into the database
@@ -128,7 +129,41 @@ func GetUserData(c *fiber.Ctx) error {
 	if res := db.DB.Where("uuid = ?", id).First(&u); res.RowsAffected <= 0 {
 		return c.JSON(fiber.Map{"error": true, "general": "Cannot find the User"})
 	}
+
+	if id != c.Locals("id") {
+		return c.JSON(fiber.Map{
+			"email":           u.Email,
+			"name":            u.Name,
+			"profile_picture": u.ProfileImage,
+			"is_official":     u.IsOfficial,
+		})
+	}
+
 	return c.JSON(u)
+}
+
+func FollowUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+	if id == c.Locals("id") {
+		return c.JSON(fiber.Map{"error": true, "general": "Cannot follow your self"})
+	}
+
+	follower := new(models.User)
+	if res := db.DB.Where("uuid = ?", c.Locals("id")).First(&follower); res.RowsAffected <= 0 {
+		return c.JSON(fiber.Map{"error": true, "general": "Cannot find the Follower"})
+	}
+
+	u := new(models.User)
+	if res := db.DB.Where("uuid = ?", id).First(&u); res.RowsAffected <= 0 {
+		return c.JSON(fiber.Map{"error": true, "general": "Cannot find the User"})
+	}
+
+	db.DB.Model(&u).Association("Follows").Append(&follower)
+
+	return c.JSON(fiber.Map{
+		"error":   false,
+		"general": follower.Name + " follows " + u.Name + ".",
+	})
 }
 
 func GetAccessToken(c *fiber.Ctx) error {

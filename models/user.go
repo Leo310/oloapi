@@ -8,12 +8,15 @@ import (
 // User represents a User schema
 type User struct {
 	Base
-	Email        string `json:"email" gorm:"unique; type:varchar; not null"`
-	Password     string `json:"-" gorm:"type:varchar; not null"`
-	Name         string `json:"name" gorm:"type:varchar; not null"`
-	ProfileImage string `json:"profile_image" gorm:"type:varchar; not null"`
-	IsVerified   bool   `json:"-" gorm:"default:false; not null"`
-	IsOfficial   bool   `json:"is_official" gorm:"default:false; not null"`
+	Email        string  `json:"email" gorm:"unique; type:varchar; not null"`
+	Password     string  `json:"-" gorm:"type:varchar; not null"`
+	Name         string  `json:"name" gorm:"type:varchar; not null"`
+	ProfileImage string  `json:"profile_image" gorm:"type:varchar; not null"`
+	IsVerified   bool    `json:"-" gorm:"default:false; not null"`
+	IsOfficial   bool    `json:"is_official" gorm:"default:false; not null"`
+	Rating       float32 `json:"rating" gorm:"default: 0.0; type:decimal(1,1);"`
+	Following    []*User `json:"following" gorm:"many2many:followers;"`
+	Follows      []*User `json:"follows" gorm:"many2many:followers;"`
 }
 
 // UserErrors represents the error format for user routes
