@@ -11,6 +11,10 @@ import (
 func ValidateRegister(u *models.User) *models.UserErrors {
 	e := &models.UserErrors{}
 
+	if !valid.IsNotNull(u.Name) || valid.HasWhitespaceOnly(u.Name) {
+		e.Err, e.Name = true, "Must not be empty"
+	}
+
 	if !valid.IsEmail(u.Email) {
 		e.Err, e.Email = true, "Must be a valid email"
 	}

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"log"
 	"math/rand"
 	db "oloapi/database"
 	"oloapi/models"
@@ -22,10 +23,7 @@ func SetupUserRoutes() {
 	USER.Post("/signin", LoginUser)               // Sign In a user
 	USER.Get("/get-access-token", GetAccessToken) // returns a new access_token
 
-	// privUser handles all the private user routes that requires authentication
-	privUser := USER.Group("/private")
-	privUser.Use(util.SecureAuth()) // middleware to secure all routes for this group
-	privUser.Get("/user", GetUserData)
+	PRIVATE.Get("/user/:id?", GetUserData)
 }
 
 // CreateUser route registers a User into the database
@@ -63,6 +61,7 @@ func CreateUser(c *fiber.Ctx) error {
 		panic(err)
 	}
 	u.Password = string(hashedPassword)
+	// u.ProfileImage = "https://avatars.dicebear.com/api/micah/" + u.Email + ".svg"
 
 	if err := db.DB.Create(&u).Error; err != nil {
 		return c.JSON(fiber.Map{
@@ -121,17 +120,26 @@ func LoginUser(c *fiber.Ctx) error {
 
 func GetUserData(c *fiber.Ctx) error {
 	id := c.Locals("id")
+	if c.Params("id") != "" {
+		id = c.Params("id")
+	}
 
 	u := new(models.User)
 	if res := db.DB.Where("uuid = ?", id).First(&u); res.RowsAffected <= 0 {
 		return c.JSON(fiber.Map{"error": true, "general": "Cannot find the User"})
 	}
-
 	return c.JSON(u)
 }
 
 func GetAccessToken(c *fiber.Ctx) error {
-	refreshToken := c.Cookies("refresh_token")
+	refreshToken := c.Cookies("refresh_token", "no_token")
+
+	if refreshToken == "no_token" {
+		log.Println(`Couldn't find "refresh_token" cookie. Checking Authorization header.`)
+		authHeaderContent := c.Get("Authorization", "no_token")
+		length := len(authHeaderContent)
+		refreshToken = authHeaderContent[7:length]
+	}
 
 	refreshClaims := new(models.Claims)
 	token, _ := jwt.ParseWithClaims(refreshToken, refreshClaims,
