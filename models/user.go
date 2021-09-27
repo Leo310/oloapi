@@ -15,8 +15,8 @@ type User struct {
 	IsVerified   bool    `json:"-" gorm:"default:false; not null"`
 	IsOfficial   bool    `json:"is_official" gorm:"default:false; not null"`
 	Rating       float32 `json:"rating" gorm:"default: 0.0; type:decimal(1,1);"`
-	Following    []*User `json:"following" gorm:"many2many:followers;"`
-	Follows      []*User `json:"follows" gorm:"many2many:followers;"`
+	Follows      []*User `gorm:"many2many:user_relation;foreignKey:UUID;joinForeignKey:follower;References:UUID;joinReferences:following"`
+	Followers    []*User `gorm:"many2many:user_relation;foreignKey:UUID;joinForeignKey:following;References:UUID;joinReferences:follower"`
 }
 
 // UserErrors represents the error format for user routes

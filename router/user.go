@@ -130,12 +130,17 @@ func GetUserData(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"error": true, "general": "Cannot find the User"})
 	}
 
-	if id != c.Locals("id") {
+	db.DB.Model(&u).Omit("Follows.*").Association("Followers").Count()
+
+	if id == c.Locals("id") {
 		return c.JSON(fiber.Map{
+			"uuid":            u.UUID,
 			"email":           u.Email,
 			"name":            u.Name,
 			"profile_picture": u.ProfileImage,
 			"is_official":     u.IsOfficial,
+			"followers":       db.DB.Model(&u).Omit("Follows.*").Association("Followers").Count(),
+			"follows":         db.DB.Model(&u).Omit("Followers.*").Association("Follows").Count(),
 		})
 	}
 
@@ -158,7 +163,13 @@ func FollowUser(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"error": true, "general": "Cannot find the User"})
 	}
 
-	db.DB.Model(&u).Association("Follows").Append(&follower)
+	err := db.DB.Model(&u).Omit("Followers.*").Association("Followers").Append(follower)
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"error":   true,
+			"general": err.Error(),
+		})
+	}
 
 	return c.JSON(fiber.Map{
 		"error":   false,
