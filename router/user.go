@@ -132,19 +132,16 @@ func GetUserData(c *fiber.Ctx) error {
 
 	db.DB.Model(&u).Omit("Follows.*").Association("Followers").Count()
 
-	if id == c.Locals("id") {
-		return c.JSON(fiber.Map{
-			"uuid":            u.UUID,
-			"email":           u.Email,
-			"name":            u.Name,
-			"profile_picture": u.ProfileImage,
-			"is_official":     u.IsOfficial,
-			"followers":       db.DB.Model(&u).Omit("Follows.*").Association("Followers").Count(),
-			"follows":         db.DB.Model(&u).Omit("Followers.*").Association("Follows").Count(),
-		})
-	}
+	return c.JSON(fiber.Map{
+		"uuid":            u.UUID,
+		"email":           u.Email,
+		"name":            u.Name,
+		"profile_picture": u.ProfileImage,
+		"is_official":     u.IsOfficial,
+		"followers":       db.DB.Model(&u).Omit("Follows.*").Association("Followers").Count(),
+		"follows":         db.DB.Model(&u).Omit("Followers.*").Association("Follows").Count(),
+	})
 
-	return c.JSON(u)
 }
 
 func FollowUser(c *fiber.Ctx) error {
