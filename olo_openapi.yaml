@@ -1,0 +1,233 @@
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: oLo
+servers:
+    - url: 'localhost:3000/api'
+      description: API for renting stuff and Account management
+
+paths:
+    /user:
+        get:
+            summary: Get specific limit of users
+            operationId: getUsers
+            tags:
+                - user
+            parameters:
+                - $ref: '#/components/parameters/limit'
+            responses:
+                '200':
+                    description: ok
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/UserID'
+    /user/signup:
+        post:
+            summary: 'Registers user'
+            operationId: registerUser
+            tags:
+                - user
+            requestBody:
+                required: true
+                content: 
+                    application/json:
+                        schema: 
+                            $ref: '#/components/schemas/User'
+            responses:
+                200:
+                    description: ok     
+    /user/:id:
+        get:
+            summary: 'Get info about user'
+            operationId: infoUser
+            tags:
+                - user
+            parameters:
+                - $ref: '#/components/parameters/ID'
+            responses:
+                200:
+                    description: A user object
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+        delete:
+            summary: 'Delete user'
+            operationId: deleteUser
+            tags:
+                - user
+            parameters:
+                - $ref: '#/components/parameters/ID'
+            responses:
+                200:
+                    description: ok
+        put:
+            summary: 'User updates info'
+            operationId: updateUser
+            tags:
+                - user
+            parameters:
+                - $ref: '#/components/parameters/ID'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+            responses:
+                200:
+                    description: ok
+
+    /item:
+        get:
+            summary: Get specific limit of items
+            operationId: getUsers
+            tags:
+                - item
+            parameters:
+                - $ref: '#/components/parameters/limit'
+            responses:
+                '200':
+                    description: ok
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ItemID'
+    /item/create:
+        post:
+            summary: 'Creating item'
+            operationId: createItem
+            tags:
+                - item
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Item'
+            responses:
+                200:
+                    description: ok            
+    /item/:id:
+        get:
+            summary: 'Get item info'
+            operationId: getItem
+            tags:
+                - item
+            parameters:
+                - $ref: '#/components/parameters/ID'
+            responses:
+                200:
+                    description: ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ItemInfo'
+        put:
+            summary: 'Update Item info'
+            operationId: updateItem
+            tags:
+                - item
+            parameters:
+               - $ref: '#/components/parameters/ID'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Item'
+            responses:
+                200:
+                    description: ok
+        delete:
+            summary: 'Delete item'
+            operationId: deleteItem
+            tags:
+                - item
+            parameters:
+                - $ref: '#/components/parameters/ID'
+            responses:
+                200:
+                    description: ok
+
+components:
+    schemas:
+        UserID:
+            type: object
+            properties:
+                id:
+                    type: string
+                    example: safkljsklj2kl
+                name:
+                    type: string
+                    example: niels
+            required:
+                - id
+        User:
+            type: object
+            properties:
+                email:
+                    type: string
+                    example: niels@leo.de
+                name:
+                    type: string
+                    example: niels
+                password:
+                    type: string
+                    example: topsecretpw
+                image:
+                    type: string
+                    example: todo, upload image
+        ItemID:
+            type: object
+            properties:
+                id:
+                    type: string
+                    example: safkljsklj2kl
+                name:
+                    type: string
+                    example: beamer
+            required:
+                - id
+        Item:
+            type: object
+            properties:
+                title:
+                    type: string
+                    example: Beamer
+                description:
+                    type: string
+                    example: Geiler beamer mit super tollen anschlüssen
+                price:
+                    type: number
+                    format: float
+                    example: 32,10
+                category:
+                    type: integer
+                    format: int32
+                    example: 4
+                    minimum: 1
+                    maximum: 10
+
+    parameters:
+        ID:
+            name: id
+            in: path
+            description: ID of the user or item
+            required: true
+            schema:
+                type: string
+                example: lkjsdalk321
+        limit:
+            name: limit
+            in: query
+            description: limit of users to get
+            schema:
+                type: integer
+                format: int32
+                minimum: 1
+                maximum: 50
