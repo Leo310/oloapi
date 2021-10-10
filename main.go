@@ -7,12 +7,11 @@ import (
 	"oloapi/router"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 // CreateServer creates a new Fiber Instance
 
-func CreateServer() *fiber.App {
+func createServer() *fiber.App {
 	app := fiber.New()
 
 	return app
@@ -21,9 +20,7 @@ func CreateServer() *fiber.App {
 func main() {
 	// Connect to Postgres
 	database.ConnectToDB()
-	app := CreateServer()
-
-	app.Use(cors.New())
+	app := createServer()
 
 	router.SetupRoutes(app)
 
