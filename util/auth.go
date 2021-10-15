@@ -23,7 +23,6 @@ func GenerateTokens(uuid string) (string, string) {
 
 // GenerateAccessClaims returns a claim and a acess_token string
 func GenerateAccessClaims(uuid string) (*models.Claims, string) {
-
 	t := time.Now()
 	claim := &models.Claims{
 		StandardClaims: jwt.StandardClaims{
@@ -131,27 +130,28 @@ func SecureAuth() func(*fiber.Ctx) error {
 			}
 		}
 
-		c.Locals("id", claims.Issuer)
+		c.Locals("uuid", claims.Issuer)
 		return c.Next()
 	}
 }
 
 // GetAuthCookies sends two cookies of type access_token and refresh_token
+// TODO turn secure back on when https. postman couldnt recognize these cookies. was such a pain in the ass
 func GetAuthCookies(accessToken, refreshToken string) (*fiber.Cookie, *fiber.Cookie) {
 	accessCookie := &fiber.Cookie{
-		Name:     "access_token",
-		Value:    accessToken,
-		Expires:  time.Now().Add(24 * time.Hour),
-		HTTPOnly: true,
-		Secure:   true,
+		Name:    "access_token",
+		Value:   accessToken,
+		Expires: time.Now().Add(24 * time.Hour),
+		// HTTPOnly: true,
+		// Secure:   true,
 	}
 
 	refreshCookie := &fiber.Cookie{
-		Name:     "refresh_token",
-		Value:    refreshToken,
-		Expires:  time.Now().Add(10 * 24 * time.Hour),
-		HTTPOnly: true,
-		Secure:   true,
+		Name:    "refresh_token",
+		Value:   refreshToken,
+		Expires: time.Now().Add(10 * 24 * time.Hour),
+		// HTTPOnly: true,
+		// Secure:   true,
 	}
 
 	return accessCookie, refreshCookie

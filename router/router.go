@@ -12,7 +12,7 @@ var privrouter fiber.Router
 // SetupRoutes setups all the Routes
 func SetupRoutes(app *fiber.App) {
 	apirouter = app.Group("/api")
-	privrouter = apirouter.Group("/privat")
+	privrouter = apirouter.Group("/private")
 
 	setupUserRoutes()
 }
