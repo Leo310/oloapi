@@ -9,7 +9,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// TODO remove every fiber.Map(error) and replace with error class
 func LoginUser(c *fiber.Ctx) error {
 	type LoginInput struct {
 		Email    string `json:"email"`

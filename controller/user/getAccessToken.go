@@ -14,7 +14,6 @@ import (
 
 var jwtKey = []byte(os.Getenv("PRIV_KEY"))
 
-// TODO dont need to check if we pass it through private route
 func GetAccessToken(c *fiber.Ctx) error {
 	refreshToken := c.Cookies("refresh_token", "no_token")
 
