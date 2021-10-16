@@ -19,7 +19,6 @@ var DB *gorm.DB
 
 // ConnectToDB connects the server with database
 func ConnectToDB() {
-
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading env file \n", err)
 	}
@@ -33,7 +32,7 @@ func ConnectToDB() {
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
 		// %v checks if the value (in this case err) includes the fmt.Stringer interface (which is a single String() string method)
-		log.Printf("Error: %v\n", err)
+		log.Printf("Error (Database already exists): %v\n", err)
 	}
 	// %q like %s but safely escapes a string and puts quotes to it
 	log.Printf("Database create output: %q", out.String())
@@ -43,7 +42,8 @@ func ConnectToDB() {
 		os.Getenv("PSQL_IP"), os.Getenv("PSQL_USER"), os.Getenv("PSQL_PASS"), os.Getenv("PSQL_DBNAME"), os.Getenv("PSQL_PORT"))
 
 	log.Print("Connecting to Postgres DB...")
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database. \n", err)
 		os.Exit(2)

@@ -1,7 +1,6 @@
 package user
 
 import (
-	"log"
 	db "oloapi/database"
 	"oloapi/models"
 	"oloapi/util"
@@ -23,8 +22,6 @@ func LoginUser(c *fiber.Ctx) error {
 		return c.JSON(ustatus{StatusCode: errReviewInput})
 	}
 
-	log.Print("Log:   ")
-	log.Println(input.Email)
 	// check if a user exists
 	u := new(models.User)
 	if res := db.DB.Where(
