@@ -15,7 +15,7 @@ func setupUserRoutes() {
 	userRouter.Post("/register", user.RegisterUser)          // Sign Up a user
 	userRouter.Post("/login", user.LoginUser)                // Sign In a user
 	userRouter.Get("/get-access-token", user.GetAccessToken) // returns a new access_token
-	userRouter.Get("/:id", user.GetUserData)
+	userRouter.Get("/:uuid", user.GetUserData)
 	userRouter.Get("/", user.GetUsersData)
 
 	userPrivRouter.Delete("/delete", user.DeleteUser)

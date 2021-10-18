@@ -6,6 +6,10 @@ import (
 	valid "github.com/asaskevich/govalidator"
 )
 
+func ValidUuid(uuid string) bool {
+	return valid.IsUUID(uuid)
+}
+
 func ValidEmail(email string) bool {
 	return valid.IsEmail(email)
 }
