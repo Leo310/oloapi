@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log"
 	db "oloapi/database"
 	"oloapi/models"
 
@@ -8,21 +9,14 @@ import (
 )
 
 func GetUserData(ctx *fiber.Ctx) error {
-	id := ctx.Params("id")
+	// limit := ctx.Query("limit", "10") //default return 10 users
 
-	user := new(models.User)
-	if res := db.DB.Where("uuid = ?", id).First(&user); res.RowsAffected <= 0 {
-		return ctx.JSON(ustatus{StatusCode: errUserNotFound})
-	}
-
-	db.DB.Model(&user).Omit("Follows.*").Association("Followers").Count()
+	var users []models.User
+	db.DB.Find(&users)
+	log.Print(users)
 
 	return ctx.JSON(fiber.Map{
-		"uuid":            user.UUID,
-		"email":           user.Email,
-		"name":            user.Name,
-		"profile_picture": user.ProfileImage,
-		"is_official":     user.IsOfficial,
+		"hel": "hello",
 	})
 
 }
