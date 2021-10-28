@@ -17,12 +17,14 @@ func GetUserData(ctx *fiber.Ctx) error {
 		return ctx.JSON(ustatus{StatusCode: errReviewInput})
 	}
 
-	user := new(models.User)
+	user := models.User{Locations: []models.Location{}}
 	if err := db.DB.First(&user, "uuid = ?", uuid).Error; err != nil {
 		log.Println(errUserNotFound)
 		ctx.Status(400)
 		return ctx.JSON(ustatus{StatusCode: errUserNotFound})
 	}
+	// TODO better solution with association
+	db.DB.Where("user_uuid = ?", uuid).Find(&user.Locations)
 
 	return ctx.JSON(user)
 

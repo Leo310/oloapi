@@ -2,6 +2,7 @@ package user
 
 type statusId int16
 
+// TODO statusCode lower case
 type ustatus struct {
 	StatusCode statusId
 }
@@ -17,6 +18,7 @@ const (
 	errSomeError
 	errCredentialsInvalid
 	errUserNotFound
+	errLocationNotFound
 )
 
 func (status statusId) String() string {
@@ -30,6 +32,7 @@ func (status statusId) String() string {
 		"Something went wrong, please try again later. 😕",
 		"Credentials are Invalid",
 		"Can not find User",
+		"Could not find Location",
 	}[status]
 }
 

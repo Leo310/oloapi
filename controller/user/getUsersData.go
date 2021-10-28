@@ -19,6 +19,14 @@ func GetUsersData(ctx *fiber.Ctx) error {
 	var users []models.User
 	db.DB.Limit(limit).Find(&users)
 
+	for index, user := range users {
+		// user.Locations = []models.Location{}
+		// TODO better solution with association
+		db.DB.Where("user_uuid = ?", user.UUID).Find(&user.Locations)
+		// because user is only value not reference
+		users[index] = user
+	}
+
 	return ctx.JSON(users)
 
 }

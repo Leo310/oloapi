@@ -31,13 +31,28 @@ func validateRegister(user *models.User) ustatus {
 // RegisterUser route registers a User into the database
 func RegisterUser(ctx *fiber.Ctx) error {
 	user := new(models.User)
+
 	if err := ctx.BodyParser(user); err != nil {
 		return ctx.JSON(ustatus{StatusCode: errReviewInput})
 	}
-
 	if status := validateRegister(user); status.StatusCode != 0 {
-		log.Print(status)
+		log.Println(status)
 		return ctx.JSON(status)
+	}
+	//user.Locations = make([]models.Location, 0)
+	//for _, reqLocation := range user.Locations {
+	//	if possibleLocations, err := GetValidAddress(reqLocation.Street, reqLocation.Housenumber, reqLocation.City); err == nil {
+	//		//only use first returned Address of Geoapi because it has highest possibility to be the right address
+	//		location := models.Location{Osm_id: possibleLocations[0].Osm_id, Osm_type: possibleLocations[0].Osm_type}
+	//		user.Locations = append(user.Locations, location)
+	//	} else {
+	//		return ctx.JSON(ustatus{StatusCode: errLocationNotFound})
+	//	}
+	//}
+
+	//only check first address because client only sends one location on register
+	if _, err := GetValidLookup(user.Locations[0].Osm_id, user.Locations[0].Osm_type); err != nil {
+		return ctx.JSON(ustatus{StatusCode: errLocationNotFound})
 	}
 
 	// TODO Hashing the password with a random salt
@@ -52,6 +67,7 @@ func RegisterUser(ctx *fiber.Ctx) error {
 	}
 	user.Password = string(hashedPassword)
 	// u.ProfileImage = "https://avatars.dicebear.com/api/micah/" + u.Email + ".svg"
+	user.ProfileImage = "https://avatars.dicebear.com/api/micah/" + user.Email + ".svg"
 
 	if err := db.DB.Create(&user).Error; err != nil {
 		return ctx.JSON(ustatus{StatusCode: errSomeError})
