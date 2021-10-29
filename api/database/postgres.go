@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"oloapi/models"
+	"oloapi/api/models"
 	"os"
 	"os/exec"
 
@@ -52,7 +52,7 @@ func ConnectToDB() {
 	log.Println("connected")
 
 	// turned on the loger on info mode
-	DB.Logger = logger.Default.LogMode(logger.Info)
+	DB.Logger = logger.Default.LogMode(logger.Silent)
 
 	log.Print("Running the migrations...")
 	DB.AutoMigrate(&models.User{}, &models.Claims{}, &models.Location{})

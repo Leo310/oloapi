@@ -1,8 +1,8 @@
 package user
 
 import (
-	db "oloapi/database"
-	"oloapi/models"
+	db "oloapi/api/database"
+	"oloapi/api/models"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"

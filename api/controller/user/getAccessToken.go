@@ -2,9 +2,9 @@ package user
 
 import (
 	"log"
-	db "oloapi/database"
-	"oloapi/models"
-	"oloapi/util"
+	db "oloapi/api/database"
+	"oloapi/api/models"
+	"oloapi/api/util"
 	"os"
 	"time"
 

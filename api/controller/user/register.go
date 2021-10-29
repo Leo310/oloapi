@@ -3,9 +3,9 @@ package user
 import (
 	"log"
 	"math/rand"
-	db "oloapi/database"
-	"oloapi/models"
-	"oloapi/util"
+	db "oloapi/api/database"
+	"oloapi/api/models"
+	"oloapi/api/util"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"

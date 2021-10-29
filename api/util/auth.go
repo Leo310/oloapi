@@ -2,8 +2,8 @@ package util
 
 import (
 	"log"
-	db "oloapi/database"
-	"oloapi/models"
+	db "oloapi/api/database"
+	"oloapi/api/models"
 	"os"
 	"time"
 

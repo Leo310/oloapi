@@ -1,8 +1,8 @@
 package router
 
 import (
-	"oloapi/controller/user"
-	"oloapi/util"
+	"oloapi/api/controller/user"
+	"oloapi/api/util"
 )
 
 // setupUserRoutes func sets up all the user routes

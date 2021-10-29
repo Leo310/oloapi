@@ -1,4 +1,4 @@
-module oloapi
+module oloapi/api
 
 go 1.17
 

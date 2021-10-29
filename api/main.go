@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"oloapi/database"
-	"oloapi/router"
+	"oloapi/api/database"
+	"oloapi/api/router"
 
 	"github.com/gofiber/fiber/v2"
 )
