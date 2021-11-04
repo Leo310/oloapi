@@ -33,7 +33,7 @@ postman_tests:
   script:
     - ls -la $(pwd)
     - ls -la $(pwd)/tests
-    - docker run -v $(pwd)/tests:/etc/newman -t postman/newman:latest run "/etc/newman/oLo.postman_collection.json" --folder user
+    - docker run -v $(pwd)/tests:/etc/newman -t postman/newman:latest run "oLo.postman_collection.json" --folder user
 
 docker_deploy:
   stage: deploy
