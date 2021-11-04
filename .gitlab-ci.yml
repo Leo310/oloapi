@@ -10,7 +10,7 @@
 # This template uses one generic job with conditional builds
 # for the default branch and all other (MR) branches.
 
-docker-build:
+docker_build:
   # Use the official docker image.
   image: docker:latest
   stage: build
@@ -36,3 +36,13 @@ docker-build:
     - if: $CI_COMMIT_BRANCH
       exists:
         - Dockerfile
+
+postman_tests:
+  image: 
+    name: postman/newman:alpine
+    entrypoint: [""]
+  stage: test
+  script:
+    - newman --version
+    - newman run tests/oLo.postman_collection.json --folder user
+  
