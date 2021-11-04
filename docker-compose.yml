@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  olo:
+  oloapi:
     image: docker.institut4000.gmbh/olo/oloapi
     environment:
       - POSTGRES_PASSWORD=postgres
