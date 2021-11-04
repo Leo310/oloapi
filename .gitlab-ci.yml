@@ -33,12 +33,12 @@ postman_tests:
   script:
     - ls -la $(pwd)
     - ls -la $(pwd)/tests
-    - docker run -v $(pwd)/tests:/tmp ubuntu ls /tmp
+    - docker run -v $(pwd)/tests:/tmp -t ubuntu ls /tmp
     - docker run -v $(pwd)/tests:/etc/newman -t postman/newman:latest run "oLo.postman_collection.json" --folder user
 
 docker_deploy:
   stage: deploy
-  script:
+  script:  
     - docker-compose down
     - docker push "$CI_REGISTRY_IMAGE${tag}"
 
