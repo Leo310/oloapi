@@ -31,6 +31,7 @@ docker_build:
 postman_tests:
   stage: test
   script:
+    - echo $(PWD)
     - docker run --network host -v $(pwd)/tests:/etc/newman -t postman/newman:latest run "oLo.postman_collection.json" --folder user
 
 docker_deploy:
