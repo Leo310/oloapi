@@ -7,6 +7,7 @@ import (
 	"oloapi/api/router"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 // CreateServer creates a new Fiber Instance
@@ -18,6 +19,10 @@ func createServer() *fiber.App {
 }
 
 func main() {
+	// TODO why working in olo image? shouldnt because executing oloapi in home directory instead of directory with .env file
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading env file \n", err)
+	}
 	// Connect to Postgres
 	database.ConnectToDB()
 	app := createServer()

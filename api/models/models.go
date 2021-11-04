@@ -15,8 +15,8 @@ func GenerateISOString() string {
 // Base contains common columns for all tables
 type Base struct {
 	UUID      uuid.UUID `json:"uuid" gorm:"primaryKey;autoIncrement:false;unique"`
-	CreatedAt string    `json:"created_at"`
-	UpdatedAt string    `json:"updated_at"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
 // BeforeCreate will set Base struct before every insert
@@ -24,16 +24,5 @@ func (base *Base) BeforeCreate(tx *gorm.DB) error {
 	// uuid.New() creates a new random UUID or panics.
 	base.UUID = uuid.New()
 
-	// generate timestamps
-	t := GenerateISOString()
-	base.CreatedAt, base.UpdatedAt = t, t
-
-	return nil
-}
-
-// AfterUpdate will update the Base struct after every update
-func (base *Base) AfterUpdate(tx *gorm.DB) error {
-	// update timestamps
-	base.UpdatedAt = GenerateISOString()
 	return nil
 }

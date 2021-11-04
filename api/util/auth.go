@@ -81,6 +81,7 @@ func GenerateRefreshClaims(cl *models.Claims) string {
 }
 
 // SecureAuth returns a middleware which secures all the private routes
+// TODO check if user with this uuid still exists. Because user could delete himself and still send private requests with his valid tokens
 func SecureAuth() func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		accessToken := c.Cookies("access_token", "no_token")

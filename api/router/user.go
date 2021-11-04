@@ -18,6 +18,7 @@ func setupUserRoutes() {
 	userRouter.Get("/:uuid", user.GetUserData)
 	userRouter.Get("/", user.GetUsersData)
 
-	userPrivRouter.Delete("/delete", user.DeleteUser)
+	userPrivRouter.Put("/", user.UpdateUser)
+	userPrivRouter.Delete("/", user.DeleteUser)
 	userPrivRouter.Get("/", user.GetProfileData)
 }

@@ -10,6 +10,7 @@ type ustatus struct {
 // itoa means that other items in const () get incremented automatically
 const (
 	noErr statusId = iota
+	errServerInternal
 	errEmailInvalid
 	errEmailAlreadyRegistered
 	errNameInvalid
@@ -24,6 +25,7 @@ const (
 func (status statusId) String() string {
 	return [...]string{
 		"No error",
+		"Internal Server error",
 		"Email is Invalid",
 		"Email is already Registered",
 		"Name is Invalid",

@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -19,9 +18,6 @@ var DB *gorm.DB
 
 // ConnectToDB connects the server with database
 func ConnectToDB() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading env file \n", err)
-	}
 
 	// creating database
 	// when PGPASSWORD is set we dont need to provide a password interactively
