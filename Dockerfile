@@ -12,6 +12,6 @@ RUN go build -o oloapi .
 RUN mv ./oloapi /home
 RUN mv ./wait_for_postgres.sh /home
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["/home/wait_for_postgres.sh", "postgresdb", "/home/oloapi"]
