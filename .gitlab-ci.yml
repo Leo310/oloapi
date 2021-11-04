@@ -20,7 +20,7 @@ docker_build:
         tag=":$CI_COMMIT_REF_SLUG"
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
       fi
-    - docker build --pull -t "$CI_REGISTRY_IMAGE${tag}" .
+    - docker build --pull -t "docker.institut4000.gmbh/olo/oloapi" .
     - docker-compose up
   # Run this job in a branch where a Dockerfile exists
   rules:
