@@ -30,8 +30,12 @@ docker_build:
 
 postman_tests:
   stage: test
+  before_script:
+    - apk add --no-cache docker-compose
   script:
     - docker run --network host -v $(pwd)/tests:/etc/newman -t postman/newman:latest run "oLo.postman_collection.json" --folder user
+  after_script:
+    - docker-compose down
 
 docker_deploy:
   stage: deploy
