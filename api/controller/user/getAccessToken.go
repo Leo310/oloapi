@@ -4,7 +4,6 @@ import (
 	"log"
 	db "oloapi/api/database"
 	"oloapi/api/models"
-	"oloapi/api/util"
 	"os"
 	"time"
 
@@ -52,7 +51,7 @@ func GetAccessToken(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusForbidden)
 	}
 
-	_, accessToken := util.GenerateAccessClaims(refreshClaims.Issuer)
+	_, accessToken := generateAccessClaims(refreshClaims.Issuer)
 
 	c.Cookie(&fiber.Cookie{
 		Name:     "access_token",

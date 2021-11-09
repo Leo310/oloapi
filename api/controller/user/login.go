@@ -3,7 +3,6 @@ package user
 import (
 	db "oloapi/api/database"
 	"oloapi/api/models"
-	"oloapi/api/util"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -34,8 +33,8 @@ func LoginUser(c *fiber.Ctx) error {
 	}
 
 	// setting up the authorization cookies
-	accessToken, refreshToken := util.GenerateTokens(u.UUID.String())
-	accessCookie, refreshCookie := util.GetAuthCookies(accessToken, refreshToken)
+	accessToken, refreshToken := generateTokens(u.UUID.String())
+	accessCookie, refreshCookie := getAuthCookies(accessToken, refreshToken)
 	c.Cookie(accessCookie)
 	c.Cookie(refreshCookie)
 

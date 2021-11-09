@@ -32,7 +32,7 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	var err error
 	if user.UUID, err = uuid.Parse(ctx.Locals("uuid").(string)); err != nil {
 		// internal server error
-		ctx.Status(500)
+		ctx.Status(fiber.StatusBadRequest)
 		return ctx.JSON(ustatus{StatusCode: errServerInternal})
 	}
 

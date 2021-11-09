@@ -12,7 +12,7 @@ func GetUsersData(ctx *fiber.Ctx) error {
 	limitString := ctx.Query("limit", "10") //default return 10 users
 	limit, err := strconv.Atoi(limitString)
 	if err != nil {
-		ctx.Status(400)
+		ctx.Status(fiber.StatusBadRequest)
 		return ctx.JSON(ustatus{StatusCode: errReviewInput})
 	}
 

@@ -2,7 +2,6 @@ package router
 
 import (
 	"oloapi/api/controller/user"
-	"oloapi/api/util"
 )
 
 // setupUserRoutes func sets up all the user routes
@@ -10,7 +9,6 @@ func setupUserRoutes() {
 	userRouter := apirouter.Group("/user")
 	// PRIVATE handles all the private user routes that requires authentication
 	userPrivRouter := privrouter.Group("/user")
-	userPrivRouter.Use(util.SecureAuth()) // middleware to secure all routes for this group
 
 	userRouter.Post("/register", user.RegisterUser)          // Sign Up a user
 	userRouter.Post("/login", user.LoginUser)                // Sign In a user
