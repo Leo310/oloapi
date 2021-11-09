@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	db "oloapi/api/database"
 	"oloapi/api/models"
-	"oloapi/api/util"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -14,11 +13,11 @@ import (
 // validate if the email, username and password are in correct format
 func validateRegister(user *models.User) ustatus {
 	var status ustatus
-	if !util.ValidEmail(user.Email) {
+	if !validEmail(user.Email) {
 		status = ustatus{StatusCode: errEmailInvalid}
-	} else if !util.ValidName(user.Name) {
+	} else if !validName(user.Name) {
 		status = ustatus{StatusCode: errNameInvalid}
-	} else if !util.ValidPassword(user.Password) {
+	} else if !validPassword(user.Password) {
 		status = ustatus{StatusCode: errPasswordInvalid}
 	} else if count := db.DB.Where(&models.User{Email: user.Email}).First(new(models.User)).RowsAffected; count > 0 {
 		status = ustatus{StatusCode: errEmailAlreadyRegistered}

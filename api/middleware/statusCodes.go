@@ -20,6 +20,7 @@ func (status statusId) String() string {
 	return [...]string{
 		"No error",
 		"Internal Server error",
+
 		"Token is unavailable",
 		"Token is expired",
 		"Token is either not active yet or expired",

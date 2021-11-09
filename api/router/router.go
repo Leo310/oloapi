@@ -15,7 +15,7 @@ var privrouter fiber.Router
 func SetupRoutes(app *fiber.App) {
 	apirouter = app.Group("/api")
 	privrouter = apirouter.Group("/private")
-	privrouter.Use(middleware.SecureAuth()) // middleware to secure all routes for this group
+	privrouter.Use(middleware.Authenticator()) // middleware to secure all routes for this group
 
 	setupUserRoutes()
 }

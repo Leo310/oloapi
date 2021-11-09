@@ -4,14 +4,13 @@ import (
 	"log"
 	db "oloapi/api/database"
 	"oloapi/api/models"
-	"oloapi/api/util"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func GetUserData(ctx *fiber.Ctx) error {
 	uuid := ctx.Params("uuid") //default return 10 users
-	if !util.ValidUuid(uuid) {
+	if !validUuid(uuid) {
 		log.Println(errReviewInput)
 		ctx.Status(fiber.StatusBadRequest)
 		return ctx.JSON(ustatus{StatusCode: errReviewInput})

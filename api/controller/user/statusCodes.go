@@ -11,30 +11,34 @@ type ustatus struct {
 const (
 	noErr statusId = iota
 	errServerInternal
-	errEmailInvalid
-	errEmailAlreadyRegistered
-	errNameInvalid
-	errPasswordInvalid
-	errReviewInput
 	errSomeError
+
+	errEmailAlreadyRegistered
 	errCredentialsInvalid
 	errUserNotFound
 	errLocationNotFound
+
+	errReviewInput
+	errEmailInvalid
+	errNameInvalid
+	errPasswordInvalid
 )
 
 func (status statusId) String() string {
 	return [...]string{
 		"No error",
 		"Internal Server error",
-		"Email is Invalid",
-		"Email is already Registered",
-		"Name is Invalid",
-		"Length of password should be atleast 8 and it must be a combination of uppercase letters, lowercase letters and numbers",
-		"Review your Input",
 		"Something went wrong, please try again later. 😕",
+
+		"Email is already Registered",
 		"Credentials are Invalid",
 		"Can not find User",
 		"Could not find Location",
+
+		"Review your Input",
+		"Email is Invalid",
+		"Name is Invalid",
+		"Length of password should be atleast 8 and it must be a combination of uppercase letters, lowercase letters and numbers",
 	}[status]
 }
 
