@@ -313,6 +313,26 @@
 			"name": "item",
 			"item": [
 				{
+					"name": "Get access token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3001/api/user/getaccesstoken",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"user",
+								"getaccesstoken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get specific limit of items",
 					"request": {
 						"method": "GET",
@@ -632,18 +652,20 @@
 					"    pm.response.to.have.status(200);",
 					"});",
 					"",
-					"var jsonData = pm.response.json();",
-					"//if status code is set in response and its not equal to zero, so there is an error",
-					"if(jsonData[\"StatusCode\"] != undefined )",
-					"{",
-					"    if(jsonData[\"StatusCode\"] != 0)",
+					"try {",
+					"    var jsonData = pm.response.json();",
+					"    //if status code is set in response and its not equal to zero, so there is an error",
+					"    if(jsonData)",
 					"    {",
-					"        //create debug test with error statusCode as output",
-					"        tests[\"oLo statuscode = \" + jsonData.StatusCode] = false;",
-					"    }    else",
-					"        tests[\"oLo statuscode = NoError(0)\"] = true;",
-					"} else",
-					"    tests[\"oLo statuscode not set\"] = true;",
+					"        if(jsonData[\"ErrorCode\"] != undefined )",
+					"        {",
+					"            //create debug test with error errorCode as output",
+					"            tests[\"oLo error_code = \" + jsonData.ErrorCode] = false;",
+					"        }",
+					"    }",
+					"}catch(e) {",
+					"",
+					"}",
 					""
 				]
 			}
