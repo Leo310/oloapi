@@ -11,32 +11,31 @@ import (
 )
 
 // validate if the email, username and password are in correct format
-func validateRegister(user *models.User) ustatus {
-	var status ustatus
+func validateRegister(user *models.User) errorCode {
+	var error errorCode
 	if !validEmail(user.Email) {
-		status = ustatus{StatusCode: errEmailInvalid}
+		error = errEmailInvalid
 	} else if !validName(user.Name) {
-		status = ustatus{StatusCode: errNameInvalid}
+		error = errNameInvalid
 	} else if !validPassword(user.Password) {
-		status = ustatus{StatusCode: errPasswordInvalid}
+		error = errPasswordInvalid
 	} else if count := db.DB.Where(&models.User{Email: user.Email}).First(new(models.User)).RowsAffected; count > 0 {
-		status = ustatus{StatusCode: errEmailAlreadyRegistered}
+		error = errEmailAlreadyRegistered
 	} else {
-		status = ustatus{StatusCode: noErr}
+		error = "NO_ERROR"
 	}
-	return status
+	return error
 }
 
-// RegisterUser route registers a User into the database
 func RegisterUser(ctx *fiber.Ctx) error {
 	user := new(models.User)
 
 	if err := ctx.BodyParser(user); err != nil {
-		return ctx.JSON(ustatus{StatusCode: errReviewInput})
+		return ctx.JSON(uerror{ErrorCode: errReviewInput})
 	}
-	if status := validateRegister(user); status.StatusCode != noErr {
-		log.Println(status)
-		return ctx.JSON(status)
+	if error := validateRegister(user); error != "NO_ERROR" {
+		log.Println(error)
+		return ctx.JSON(uerror{ErrorCode: error})
 	}
 	//user.Locations = make([]models.Location, 0)
 	//for _, reqLocation := range user.Locations {
@@ -51,7 +50,7 @@ func RegisterUser(ctx *fiber.Ctx) error {
 
 	//only check first address because client only sends one location on register
 	if _, err := GetValidLookup(user.Locations[0].Osm_id, user.Locations[0].Osm_type); err != nil {
-		return ctx.JSON(ustatus{StatusCode: errLocationNotFound})
+		return ctx.JSON(uerror{ErrorCode: errLocationNotFound})
 	}
 
 	// TODO Hashing the password with a random salt
@@ -69,7 +68,7 @@ func RegisterUser(ctx *fiber.Ctx) error {
 	user.ProfileImage = "https://avatars.dicebear.com/api/micah/" + user.Email + ".svg"
 
 	if err := db.DB.Create(&user).Error; err != nil {
-		return ctx.JSON(ustatus{StatusCode: errSomeError})
+		return ctx.JSON(uerror{ErrorCode: errSomeError})
 	}
 
 	// setting up the authorization cookies

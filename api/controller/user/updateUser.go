@@ -10,20 +10,20 @@ import (
 )
 
 // validate if the email, username and password are in correct format
-func validateUpdate(user *models.User) ustatus {
-	var status ustatus
+func validateUpdate(user *models.User) errorCode {
+	var error errorCode
 	if !validEmail(user.Email) {
-		status = ustatus{StatusCode: errEmailInvalid}
+		error = errEmailInvalid
 	} else if !validName(user.Name) {
-		status = ustatus{StatusCode: errNameInvalid}
+		error = errNameInvalid
 	} else if !validPassword(user.Password) {
-		status = ustatus{StatusCode: errPasswordInvalid}
+		error = errPasswordInvalid
 	} else if count := db.DB.Where(&models.User{Email: user.Email}).First(new(models.User)).RowsAffected; count > 0 {
-		status = ustatus{StatusCode: errEmailAlreadyRegistered}
+		error = errEmailAlreadyRegistered
 	} else {
-		status = ustatus{StatusCode: noErr}
+		error = "NO_ERROR"
 	}
-	return status
+	return error
 }
 
 func UpdateUser(ctx *fiber.Ctx) error {
@@ -32,7 +32,7 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	if user.UUID, err = uuid.Parse(ctx.Locals("uuid").(string)); err != nil {
 		// internal server error
 		ctx.Status(fiber.StatusBadRequest)
-		return ctx.JSON(ustatus{StatusCode: errServerInternal})
+		return ctx.JSON(uerror{ErrorCode: errServerInternal})
 	}
 
 	// first save everything already know about user in user
@@ -40,19 +40,19 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	notOverridenUUID := user.UUID
 	// then overwrite everything
 	if err = ctx.BodyParser(user); err != nil {
-		return ctx.JSON(ustatus{StatusCode: errReviewInput})
+		return ctx.JSON(uerror{ErrorCode: errReviewInput})
 	}
 	// user could override a uuid and change the user data off another user
 	user.UUID = notOverridenUUID
 	// Improvement: only validate changed values
-	if status := validateUpdate(user); status.StatusCode != noErr {
-		log.Println(status)
-		return ctx.JSON(status)
+	if error := validateUpdate(user); error != "NO_ERROR" {
+		log.Println(error)
+		return ctx.JSON(uerror{ErrorCode: error})
 	}
 	//user.Locations = make([]models.Location, 0)
 	// and update overwritten user
 	if dbtx := db.DB.Save(&user); dbtx.Error != nil {
-		return ctx.JSON(ustatus{StatusCode: errEmailAlreadyRegistered})
+		return ctx.JSON(uerror{ErrorCode: errEmailAlreadyRegistered})
 	}
-	return ctx.JSON(ustatus{StatusCode: noErr})
+	return ctx.Status(fiber.StatusOK).Send(nil)
 }

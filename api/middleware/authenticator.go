@@ -27,7 +27,7 @@ func Authenticator() func(*fiber.Ctx) error {
 		}
 
 		if accessToken == "no_token" {
-			return c.Status(fiber.StatusUnauthorized).JSON(ustatus{StatusCode: errTokenUnavailable})
+			return c.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenUnavailable})
 		}
 
 		token, err := jwt.ParseWithClaims(accessToken, claims,
@@ -37,7 +37,7 @@ func Authenticator() func(*fiber.Ctx) error {
 
 		if token != nil && token.Valid {
 			if claims.ExpiresAt < time.Now().Unix() {
-				return c.Status(fiber.StatusUnauthorized).JSON(ustatus{StatusCode: errTokenExpired})
+				return c.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenExpired})
 			}
 		} else if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
@@ -46,7 +46,7 @@ func Authenticator() func(*fiber.Ctx) error {
 				return c.SendStatus(fiber.StatusForbidden)
 			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
 				// Token is either expired or not active yet
-				return c.Status(fiber.StatusUnauthorized).JSON(ustatus{StatusCode: errTokenNotActiveExpired})
+				return c.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenNotActiveExpired})
 			} else {
 				// cannot handle this token
 				c.ClearCookie("access_token", "refresh_token")

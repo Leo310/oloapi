@@ -1,17 +1,16 @@
 package user
 
-type statusCode string
+type errorCode string
 
 // TODO statusCode lower case
-type ustatus struct {
-	StatusCode statusCode
+type uerror struct {
+	ErrorCode errorCode
 }
 
 // itoa means that other items in const () get incremented automatically
 const (
-	noErr             statusCode = "SOBER"
-	errServerInternal            = "INTERNAL"
-	errSomeError                 = "SOME_ERROR"
+	errServerInternal errorCode = "INTERNAL"
+	errSomeError                = "SOME_ERROR"
 
 	errEmailAlreadyRegistered = "EMAIL_ALREADY_REGISTERED"
 	errCredentialsInvalid     = "CREDENTIALS_INVALID"

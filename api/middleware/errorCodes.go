@@ -1,17 +1,16 @@
 package middleware
 
-type statusCode string
+type errorCode string
 
 // TODO statusCode lower case
-type ustatus struct {
-	StatusCode statusCode
+type merror struct {
+	ErrorCode errorCode
 }
 
 // itoa means that other items in const () get incremented automatically
 const (
-	noErr             statusCode = "SOBER"
-	errServerInternal            = "INTERNAL"
-	errSomeError                 = "SOME_ERROR"
+	errServerInternal errorCode = "INTERNAL"
+	errSomeError                = "SOME_ERROR"
 
 	errTokenUnavailable      = "TOKEN_UNAVAILABLE"
 	errTokenExpired          = "TOKEN_EXPIRED"

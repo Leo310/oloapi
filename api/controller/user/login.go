@@ -17,19 +17,19 @@ func LoginUser(c *fiber.Ctx) error {
 	input := new(LoginInput)
 
 	if err := c.BodyParser(input); err != nil {
-		return c.JSON(ustatus{StatusCode: errReviewInput})
+		return c.JSON(uerror{ErrorCode: errReviewInput})
 	}
 
 	// check if a user exists
 	u := new(models.User)
 	if res := db.DB.Where(
 		&models.User{Email: input.Email}).First(&u); res.RowsAffected <= 0 {
-		return c.JSON(ustatus{StatusCode: errCredentialsInvalid})
+		return c.JSON(uerror{ErrorCode: errCredentialsInvalid})
 	}
 
 	// Comparing the password with the hash
 	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(input.Password)); err != nil {
-		return c.JSON(ustatus{StatusCode: errCredentialsInvalid})
+		return c.JSON(uerror{ErrorCode: errCredentialsInvalid})
 	}
 
 	// setting up the authorization cookies
