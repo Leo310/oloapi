@@ -45,7 +45,7 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	// user could override a uuid and change the user data off another user
 	user.UUID = notOverridenUUID
 	// Improvement: only validate changed values
-	if status := validateUpdate(user); status.StatusCode != 0 {
+	if status := validateUpdate(user); status.StatusCode != noErr {
 		log.Println(status)
 		return ctx.JSON(status)
 	}

@@ -1,30 +1,21 @@
 package middleware
 
-type statusId int16
+type statusCode string
 
 // TODO statusCode lower case
 type ustatus struct {
-	StatusCode statusId
+	StatusCode statusCode
 }
 
 // itoa means that other items in const () get incremented automatically
 const (
-	noErr statusId = iota
-	errServerInternal
-	errTokenUnavailable
-	errTokenExpired
-	errTokenNotActiveExpired
+	noErr             statusCode = "SOBER"
+	errServerInternal            = "INTERNAL"
+	errSomeError                 = "SOME_ERROR"
+
+	errTokenUnavailable      = "TOKEN_UNAVAILABLE"
+	errTokenExpired          = "TOKEN_EXPIRED"
+	errTokenNotActiveExpired = "TOKEN_NOT_ACTIVE_EXPIRED"
 )
-
-func (status statusId) String() string {
-	return [...]string{
-		"No error",
-		"Internal Server error",
-
-		"Token is unavailable",
-		"Token is expired",
-		"Token is either not active yet or expired",
-	}[status]
-}
 
 // TODO: puts enum in namespace

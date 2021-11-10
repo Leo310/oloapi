@@ -1,45 +1,27 @@
 package user
 
-type statusId int16
+type statusCode string
 
 // TODO statusCode lower case
 type ustatus struct {
-	StatusCode statusId
+	StatusCode statusCode
 }
 
 // itoa means that other items in const () get incremented automatically
 const (
-	noErr statusId = iota
-	errServerInternal
-	errSomeError
+	noErr             statusCode = "SOBER"
+	errServerInternal            = "INTERNAL"
+	errSomeError                 = "SOME_ERROR"
 
-	errEmailAlreadyRegistered
-	errCredentialsInvalid
-	errUserNotFound
-	errLocationNotFound
+	errEmailAlreadyRegistered = "EMAIL_ALREADY_REGISTERED"
+	errCredentialsInvalid     = "CREDENTIALS_INVALID"
+	errUserNotFound           = "USER_NOT_FOUND"
+	errLocationNotFound       = "LOCATION_NOT_FOUND"
 
-	errReviewInput
-	errEmailInvalid
-	errNameInvalid
-	errPasswordInvalid
+	errReviewInput     = "REVIEW_INPUT"
+	errEmailInvalid    = "EMAIL_INVALID"
+	errNameInvalid     = "NAME_INVALID"
+	errPasswordInvalid = "PASSWORD_INVALID"
 )
-
-func (status statusId) String() string {
-	return [...]string{
-		"No error",
-		"Internal Server error",
-		"Something went wrong, please try again later. 😕",
-
-		"Email is already Registered",
-		"Credentials are Invalid",
-		"Can not find User",
-		"Could not find Location",
-
-		"Review your Input",
-		"Email is Invalid",
-		"Name is Invalid",
-		"Length of password should be atleast 8 and it must be a combination of uppercase letters, lowercase letters and numbers",
-	}[status]
-}
 
 // TODO: puts enum in namespace

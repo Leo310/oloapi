@@ -34,7 +34,7 @@ func RegisterUser(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(user); err != nil {
 		return ctx.JSON(ustatus{StatusCode: errReviewInput})
 	}
-	if status := validateRegister(user); status.StatusCode != 0 {
+	if status := validateRegister(user); status.StatusCode != noErr {
 		log.Println(status)
 		return ctx.JSON(status)
 	}
