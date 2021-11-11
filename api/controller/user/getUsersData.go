@@ -10,7 +10,7 @@ import (
 )
 
 type apiUsers struct {
-	UUID         uuid.UUID `json:"-" gorm:"primaryKey;autoIncrement:false;unique"`
+	UUID         uuid.UUID `json:"uuid" gorm:"primaryKey;autoIncrement:false;unique"`
 	Email        string    `json:"email"`
 	Name         string    `json:"name"`
 	ProfileImage string    `json:"profile_image"`
