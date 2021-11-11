@@ -1,10 +1,7 @@
 package middleware
 
 import (
-	"log"
-	"oloapi/api/models"
 	"os"
-	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -12,49 +9,47 @@ import (
 
 var jwtKey = []byte(os.Getenv("PRIV_KEY"))
 
+type claims struct {
+	jwt.StandardClaims
+}
+
 // Authenticator returns a middleware which secures all the private routes
 // TODO check if user with this uuid still exists. Because user could delete himself and still send private requests with his valid tokens
 func Authenticator() func(*fiber.Ctx) error {
-	return func(c *fiber.Ctx) error {
-		accessToken := c.Cookies("access_token", "no_token")
-		claims := new(models.Claims)
+	return func(ctx *fiber.Ctx) error {
+		claims := new(claims)
 
-		if accessToken == "no_token" {
-			log.Println(`Couldn't find "access_token" cookie. Checking Authorization header.`)
-			authHeaderContent := c.Get("Authorization", "no_token")
-			length := len(authHeaderContent)
-			accessToken = authHeaderContent[7:length]
+		authHeaderContent := ctx.Get("Authorization", "no_token")
+		if authHeaderContent == "no_token" {
+			return ctx.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenUnavailable})
 		}
+		length := len(authHeaderContent)
+		// remove Bearer string at the beginning of Authorization header
+		token := authHeaderContent[7:length]
 
-		if accessToken == "no_token" {
-			return c.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenUnavailable})
-		}
-
-		token, err := jwt.ParseWithClaims(accessToken, claims,
+		parsedToken, err := jwt.ParseWithClaims(token, claims,
 			func(token *jwt.Token) (interface{}, error) {
 				return jwtKey, nil
 			})
 
-		if token != nil && token.Valid {
-			if claims.ExpiresAt < time.Now().Unix() {
-				return c.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenExpired})
-			}
-		} else if ve, ok := err.(*jwt.ValidationError); ok {
+		//parsedToken is nil when authorization header is empty string
+		if parsedToken != nil && parsedToken.Valid {
+			// expired at checked by ParseWithClaims()
+			ctx.Locals("uuid", claims.Issuer)
+			return ctx.Next()
+		} else {
+			ve := err.(*jwt.ValidationError)
+			//filtering exact error
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 				// this is not even a token, we should delete the cookies here
-				c.ClearCookie("access_token", "refresh_token")
-				return c.SendStatus(fiber.StatusForbidden)
+				return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenBad})
 			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
 				// Token is either expired or not active yet
-				return c.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenNotActiveExpired})
+				return ctx.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenNotActiveExpired})
 			} else {
 				// cannot handle this token
-				c.ClearCookie("access_token", "refresh_token")
-				return c.SendStatus(fiber.StatusForbidden)
+				return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenBad})
 			}
 		}
-
-		c.Locals("uuid", claims.Issuer)
-		return c.Next()
 	}
 }

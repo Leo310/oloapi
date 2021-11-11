@@ -18,6 +18,14 @@
 									"listen": "test",
 									"script": {
 										"exec": [
+											"try {",
+											"    var jsonData = pm.response.json();",
+											"    //if status code is set in response and its not equal to zero, so there is an error",
+											"    pm.environment.set(\"access_token\", jsonData[\"access_token\"]);",
+											"    pm.environment.set(\"refresh_token\", jsonData[\"refresh_token\"]);",
+											"}catch(e) {",
+											"",
+											"}",
 											""
 										],
 										"type": "text/javascript"
@@ -141,6 +149,23 @@
 										],
 										"type": "text/javascript"
 									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"try {",
+											"    var jsonData = pm.response.json();",
+											"    //if status code is set in response and its not equal to zero, so there is an error",
+											"    pm.environment.set(\"access_token\", jsonData[\"access_token\"]);",
+											"    pm.environment.set(\"refresh_token\", jsonData[\"refresh_token\"]);",
+											"}catch(e) {",
+											"",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
 								}
 							],
 							"request": {
@@ -171,18 +196,16 @@
 							"response": []
 						}
 					],
+					"auth": {
+						"type": "noauth"
+					},
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"//clear cookies",
-									"const jar = pm.cookies.jar();",
-									"jar.clear(pm.request.url, function (error) {",
-									"    if(error)",
-									"        console.log(error)",
-									"});"
+									""
 								]
 							}
 						},
@@ -201,8 +224,77 @@
 					"name": "private",
 					"item": [
 						{
+							"name": "Get access token",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"try {",
+											"    var jsonData = pm.response.json();",
+											"    //if status code is set in response and its not equal to zero, so there is an error",
+											"    pm.environment.set(\"access_token\", jsonData[\"access_token\"]);",
+											"    pm.environment.set(\"refresh_token\", jsonData[\"refresh_token\"]);",
+											"}catch(e) {",
+											"",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{refresh_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3001/api/private/user/refreshTokens",
+									"host": [
+										"localhost"
+									],
+									"port": "3001",
+									"path": [
+										"api",
+										"private",
+										"user",
+										"refreshTokens"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Get profile data",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -224,6 +316,16 @@
 						{
 							"name": "Update user",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "PUT",
 								"header": [],
 								"body": {
@@ -265,7 +367,14 @@
 							],
 							"request": {
 								"auth": {
-									"type": "noauth"
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "DELETE",
 								"header": [],
@@ -312,26 +421,6 @@
 		{
 			"name": "item",
 			"item": [
-				{
-					"name": "Get access token",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:3001/api/user/getaccesstoken",
-							"host": [
-								"localhost"
-							],
-							"port": "3001",
-							"path": [
-								"api",
-								"user",
-								"getaccesstoken"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Get specific limit of items",
 					"request": {
@@ -655,13 +744,10 @@
 					"try {",
 					"    var jsonData = pm.response.json();",
 					"    //if status code is set in response and its not equal to zero, so there is an error",
-					"    if(jsonData)",
+					"    if(jsonData[\"ErrorCode\"] != undefined )",
 					"    {",
-					"        if(jsonData[\"ErrorCode\"] != undefined )",
-					"        {",
-					"            //create debug test with error errorCode as output",
-					"            tests[\"oLo error_code = \" + jsonData.ErrorCode] = false;",
-					"        }",
+					"        //create debug test with error errorCode as output",
+					"        tests[\"oLo error_code = \" + jsonData.ErrorCode] = false;",
 					"    }",
 					"}catch(e) {",
 					"",

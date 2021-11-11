@@ -15,6 +15,7 @@ const (
 	errTokenUnavailable      = "TOKEN_UNAVAILABLE"
 	errTokenExpired          = "TOKEN_EXPIRED"
 	errTokenNotActiveExpired = "TOKEN_NOT_ACTIVE_EXPIRED"
+	errTokenBad              = "TOKEN_INVALID"
 )
 
 // TODO: puts enum in namespace

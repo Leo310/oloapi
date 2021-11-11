@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
 )
 
@@ -24,15 +23,3 @@ type Location struct {
 	Osm_id   int64  `json:"osm_id"`
 	Osm_type string `json:"osm_type"`
 }
-
-// QUESTI0N why claims table exist and cant you change expiry date in access_cookie?
-type Claims struct {
-	jwt.StandardClaims
-	ID uint `gorm:"primaryKey"`
-}
-
-// TODO better update with association. last bug duplicated every entry
-// func (user *User) AfterCreate(tx *gorm.DB) error {
-// 	tx.Model(user).Update("profile_image", "https://avatars.dicebear.com/api/micah/"+user.Email+".svg")
-// 	return nil
-// }

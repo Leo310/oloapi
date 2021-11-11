@@ -73,12 +73,5 @@ func RegisterUser(ctx *fiber.Ctx) error {
 
 	// setting up the authorization cookies
 	accessToken, refreshToken := generateTokens(user.UUID.String())
-	accessCookie, refreshCookie := getAuthCookies(accessToken, refreshToken)
-	ctx.Cookie(accessCookie)
-	ctx.Cookie(refreshCookie)
-
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-	})
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"token_type": "Bearer", "access_token": accessToken, "refresh_token": refreshToken})
 }
