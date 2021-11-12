@@ -31,11 +31,11 @@ func RegisterUser(ctx *fiber.Ctx) error {
 	user := new(models.User)
 
 	if err := ctx.BodyParser(user); err != nil {
-		return ctx.JSON(uerror{ErrorCode: errReviewInput})
+		return ctx.Status(fiber.StatusBadRequest).JSON(uerror{ErrorCode: errReviewInput})
 	}
 	if error := validateRegister(user); error != "NO_ERROR" {
 		log.Println(error)
-		return ctx.JSON(uerror{ErrorCode: error})
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(uerror{ErrorCode: error})
 	}
 	//user.Locations = make([]models.Location, 0)
 	//for _, reqLocation := range user.Locations {
@@ -50,7 +50,7 @@ func RegisterUser(ctx *fiber.Ctx) error {
 
 	//only check first address because client only sends one location on register
 	if _, err := GetValidLookup(user.Locations[0].Osm_id, user.Locations[0].Osm_type); err != nil {
-		return ctx.JSON(uerror{ErrorCode: errLocationNotFound})
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(uerror{ErrorCode: errLocationNotFound})
 	}
 
 	// TODO Hashing the password with a random salt
@@ -68,7 +68,7 @@ func RegisterUser(ctx *fiber.Ctx) error {
 	user.ProfileImage = "https://avatars.dicebear.com/api/micah/" + user.Email + ".svg"
 
 	if err := db.DB.Create(&user).Error; err != nil {
-		return ctx.JSON(uerror{ErrorCode: errSomeError})
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(uerror{ErrorCode: errSomeError})
 	}
 
 	// setting up the authorization cookies

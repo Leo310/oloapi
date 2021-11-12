@@ -31,8 +31,7 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	var err error
 	if user.UUID, err = uuid.Parse(ctx.Locals("uuid").(string)); err != nil {
 		// internal server error
-		ctx.Status(fiber.StatusBadRequest)
-		return ctx.JSON(uerror{ErrorCode: errServerInternal})
+		return ctx.Status(fiber.StatusInternalServerError).JSON(uerror{ErrorCode: errServerInternal})
 	}
 
 	// first save everything already know about user in user
@@ -40,19 +39,19 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	notOverridenUUID := user.UUID
 	// then overwrite everything
 	if err = ctx.BodyParser(user); err != nil {
-		return ctx.JSON(uerror{ErrorCode: errReviewInput})
+		return ctx.Status(fiber.StatusBadRequest).JSON(uerror{ErrorCode: errReviewInput})
 	}
 	// user could override a uuid and change the user data off another user
 	user.UUID = notOverridenUUID
 	// Improvement: only validate changed values
 	if error := validateUpdate(user); error != "NO_ERROR" {
 		log.Println(error)
-		return ctx.JSON(uerror{ErrorCode: error})
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(uerror{ErrorCode: error})
 	}
 	//user.Locations = make([]models.Location, 0)
 	// and update overwritten user
 	if dbtx := db.DB.Save(&user); dbtx.Error != nil {
-		return ctx.JSON(uerror{ErrorCode: errEmailAlreadyRegistered})
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(uerror{ErrorCode: errEmailAlreadyRegistered})
 	}
 	return ctx.Status(fiber.StatusOK).Send(nil)
 }
