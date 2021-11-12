@@ -24,12 +24,12 @@ func LoginUser(ctx *fiber.Ctx) error {
 	user := new(models.User)
 	if res := db.DB.Where(
 		&models.User{Email: input.Email}).First(&user); res.RowsAffected <= 0 {
-		return ctx.JSON(uerror{ErrorCode: errCredentialsInvalid})
+		return ctx.Status(fiber.StatusTeapot).JSON(uerror{ErrorCode: errCredentialsInvalid})
 	}
 
 	// Comparing the password with the hash
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-		return ctx.JSON(uerror{ErrorCode: errCredentialsInvalid})
+		return ctx.Status(fiber.StatusTeapot).JSON(uerror{ErrorCode: errCredentialsInvalid})
 	}
 
 	// setting up the authorization cookies
