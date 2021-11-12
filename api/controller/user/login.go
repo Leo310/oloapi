@@ -28,7 +28,7 @@ func LoginUser(ctx *fiber.Ctx) error {
 	}
 
 	// Comparing the password with the hash
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password+user.Salt)); err != nil {
 		return ctx.Status(fiber.StatusTeapot).JSON(uerror{ErrorCode: errCredentialsInvalid})
 	}
 

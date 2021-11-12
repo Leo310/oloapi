@@ -27,6 +27,15 @@ func validateRegister(user *models.User) errorCode {
 	return error
 }
 
+func generateRandomSalt() string {
+	const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%?"
+	var salt string
+	for i := 0; i < 8; i++ {
+		salt += string(characters[rand.Intn(len(characters))])
+	}
+	return salt
+}
+
 func RegisterUser(ctx *fiber.Ctx) error {
 	user := new(models.User)
 
@@ -53,8 +62,9 @@ func RegisterUser(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(uerror{ErrorCode: errLocationNotFound})
 	}
 
+	user.Salt = generateRandomSalt()
 	// TODO Hashing the password with a random salt
-	password := []byte(user.Password)
+	password := []byte(user.Password + user.Salt)
 	hashedPassword, err := bcrypt.GenerateFromPassword(
 		password,
 		rand.Intn(12-bcrypt.DefaultCost)+bcrypt.DefaultCost,

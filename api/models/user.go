@@ -9,6 +9,7 @@ type User struct {
 	Base
 	Email        string     `json:"email" gorm:"unique; type:varchar; not null"`
 	Password     string     `json:"password" gorm:"type:varchar; not null"`
+	Salt         string     `json:"salt" gorm:"not null"`
 	Name         string     `json:"name" gorm:"type:varchar; not null"`
 	ProfileImage string     `json:"profile_image" gorm:"type:varchar;"`
 	IsVerified   bool       `json:"-" gorm:"default:false; not null"`
