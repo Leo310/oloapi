@@ -40,8 +40,9 @@ unit_tests:
   script:
     - go get gotest.tools/gotestsum
     - gotestsum --junitfile ../tests/report.xml --format testname --packages $(go list ./...)
-  reports:
-    junit: tests/unitreport/report.xml
+  artifacts:
+    reports:
+      junit: tests/unitreport/report.xml
 
 code_coverage:
   image: golang:latest
