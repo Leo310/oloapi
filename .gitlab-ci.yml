@@ -46,6 +46,7 @@ code_coverage:
   stage: test
   script:
     - cd ./api
+    - go get github.com/t-yuki/gocover-cobertura
     - go test -coverprofile=../tests/coverage/coverage.txt -covermode count
     - gocover-cobertura < ../tests/coverage/coverage.txt > ../tests/coverage/coverage.xml
   artifacts:
