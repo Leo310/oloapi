@@ -75,7 +75,7 @@ func RegisterUser(ctx *fiber.Ctx) error {
 	}
 	user.Password = string(hashedPassword)
 	// u.ProfileImage = "https://avatars.dicebear.com/api/micah/" + u.Email + ".svg"
-	user.ProfileImage = "https://avatars.dicebear.com/api/micah/" + user.Email + ".svg"
+	user.ProfileImage = "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
 
 	if err := db.DB.Create(&user).Error; err != nil {
 		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(uerror{ErrorCode: errSomeError})
