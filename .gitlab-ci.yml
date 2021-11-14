@@ -47,7 +47,7 @@ code_coverage:
   script:
     - cd ./api
     - go get github.com/t-yuki/gocover-cobertura
-    - go test -coverprofile=../tests/coverage/coverage.txt -covermode count
+    - go test -coverprofile=../tests/coverage/coverage.txt -covermode count $(go list ./...)
     - gocover-cobertura < ../tests/coverage/coverage.txt > ../tests/coverage/coverage.xml
   artifacts:
     reports:
