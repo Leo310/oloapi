@@ -70,3 +70,14 @@ docker_deploy_stage:
       fi
     - docker push "$CI_REGISTRY_IMAGE${tag}"
 
+pages:
+  stage: deploy_stage
+  dependencies:
+    - code_coverage
+  script:
+    - mv tests/coverage/coverage.html public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+ 
