@@ -75,7 +75,7 @@ pages:
   dependencies:
     - code_coverage
   script:
-    - mv tests/coverage/coverage.html public/
+    - mv tests/coverage/coverage.html public/coverage.html
   artifacts:
     paths:
       - public
