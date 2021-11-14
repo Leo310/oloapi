@@ -38,6 +38,7 @@ unit_tests:
   image: golang:latest
   stage: test
   script:
+    - cd ./api
     - go get gotest.tools/gotestsum
     - gotestsum --junitfile ../tests/report.xml --format testname --packages $(go list ./...)
   artifacts:
