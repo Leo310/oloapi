@@ -75,7 +75,6 @@ pages:
   dependencies:
     - code_coverage
   script:
-    - mkdir public
     - mv tests/coverage/coverage.html public
   artifacts:
     paths:
