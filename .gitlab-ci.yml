@@ -38,8 +38,10 @@ unit_tests:
   image: golang:latest
   stage: test
   script:
-    - cd ./api
-    - go test -v $(go list ./...)
+    - go get gotest.tools/gotestsum
+    - gotestsum --junitfile ../tests/report.xml --format testname --packages $(go list ./...)
+  reports:
+    junit: tests/unitreport/report.xml
 
 code_coverage:
   image: golang:latest
