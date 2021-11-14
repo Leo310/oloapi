@@ -39,6 +39,7 @@ linter:
   stage: test
   script:
     - cd api
+    - go get -u golang.org/x/lint/golint
     - golint -set_exit_status $(go list ./...)
 
 unit_tests:
