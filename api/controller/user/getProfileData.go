@@ -15,7 +15,7 @@ type apiProfile struct {
 	ProfileImage string        `json:"profile_image"`
 	IsOfficial   bool          `json:"is_official"`
 	Rating       float32       `json:"rating"`
-	Locations    []apiLocation `gorm:"foreignKey:UserUUID"`
+	Locations    []apiLocation `json:"locations" gorm:"foreignKey:UserUUID"`
 }
 
 type apiLocation struct {

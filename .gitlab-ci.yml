@@ -47,7 +47,7 @@ code_coverage:
   script:
     - cd ./api
     - go test -coverprofile=../tests/coverage/coverage.txt -covermode count
-    - gocover-cobertura < coverage.txt > coverage.xml
+    - gocover-cobertura < ../tests/coverage/coverage.txt > ../tests/coverage/coverage.xml
   artifacts:
     reports:
       cobertura: tests/coverage/coverage.xml

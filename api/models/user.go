@@ -15,7 +15,7 @@ type User struct {
 	IsVerified   bool       `json:"-" gorm:"default:false; not null"`
 	IsOfficial   bool       `json:"is_official" gorm:"default:false; not null"`
 	Rating       float32    `json:"rating" gorm:"default: 0.0; type:decimal(1,1);"`
-	Locations    []Location `gorm:"constraint:OnDelete:CASCADE;"`
+	Locations    []Location `json:"locations" gorm:"constraint:OnDelete:CASCADE;"`
 }
 
 type Location struct {
