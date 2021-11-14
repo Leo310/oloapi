@@ -25,6 +25,7 @@ require (
 	github.com/jinzhu/now v1.1.2 // indirect
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/klauspost/compress v1.13.4 // indirect
+	github.com/t-yuki/gocover-cobertura v0.0.0-20180217150009-aaee18c8195c // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.29.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect

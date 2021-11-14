@@ -41,6 +41,16 @@ unit_tests:
     - cd ./api
     - go test -v $(go list ./...)
 
+code_coverage:
+  image: golang:latest
+  stage: test
+  script:
+    - cd ./api
+    - go test -coverprofile=../tests/coverage/coverage.txt -covermode count
+    - gocover-cobertura < coverage.txt > coverage.xml
+  artifacts:
+    reports:
+      cobertura: tests/coverage/coverage.xml
 
 docker_deploy_stage:
   stage: deploy_stage
@@ -55,3 +65,4 @@ docker_deploy_stage:
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
       fi
     - docker push "$CI_REGISTRY_IMAGE${tag}"
+
