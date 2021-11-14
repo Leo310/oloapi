@@ -17,6 +17,7 @@ docker_build:
   # All other branches are tagged with the escaped branch name (commit ref slug)
   script:
     - docker build --pull -t "docker.institut4000.gmbh/olo/oloapi" .
+  after_script:
     - docker-compose up -d
   # Run this job in a branch where a Dockerfile exists
   rules:
@@ -24,15 +25,23 @@ docker_build:
       exists:
         - Dockerfile
 
+
 postman_tests:
   stage: test
   script:
     - docker run --network host -v $(pwd)/tests:/etc/newman -t postman/newman:latest run "oLo.postman_collection.json" --folder user
-  after_script:
-    - docker-compose down
+
+unit_tests:
+  stage: test
+  script:
+    - cd ./api
+    - go test -v $(go list ./...)
+
 
 docker_deploy_stage:
   stage: deploy_stage
+  before_script:
+    - docker-compose down
   script:  
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - |
@@ -44,4 +53,3 @@ docker_deploy_stage:
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
       fi
     - docker push "$CI_REGISTRY_IMAGE${tag}"
-
