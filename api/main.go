@@ -17,6 +17,7 @@ func createServer() *fiber.App {
 	return app
 }
 
+// Test 3 pipeline report
 func main() {
 	// TODO why working in olo image? shouldnt because executing oloapi in home directory instead of directory with .env file
 	if err := godotenv.Load(); err != nil {

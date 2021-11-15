@@ -67,11 +67,15 @@ code_coverage:
   stage: test
   script:
     - cd ./api
+    - go get github.com/t-yuki/gocover-cobertura
     - go test -coverprofile=../tests/coverage/coverage.txt -covermode count $(go list ./...)
+    - gocover-cobertura < ../tests/coverage/coverage.txt > ../tests/coverage/coverage.xml
     - go tool cover -html=../tests/coverage/coverage.txt -o ../tests/coverage/coverage.html
   artifacts:
     paths:
       - tests/coverage/coverage.html
+    reports:
+      cobertura: tests/coverage/coverage.xml
 
 docker_deploy_stage:
   stage: deploy_stage
