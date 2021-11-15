@@ -34,6 +34,14 @@ postman_tests:
   after_script:
     - docker-compose down
 
+linter:
+  image: golang:latest
+  stage: test
+  script:
+    - cd api
+    - go get -u golang.org/x/lint/golint
+    - golint -set_exit_status $(go list ./...)
+
 unit_tests:
   image: golang:latest
   stage: test
@@ -42,6 +50,7 @@ unit_tests:
     - go get gotest.tools/gotestsum
     - gotestsum --junitfile ../tests/report.xml --format testname --packages $(go list ./...)
   artifacts:
+    when: always #upldoads even when job fails
     reports:
       junit: tests/unitreport/report.xml
 
