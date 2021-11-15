@@ -21,6 +21,9 @@ func validateRegister(user *models.User) errorCode {
 		error = errPasswordInvalid
 	} else if count := db.DB.Where(&models.User{Email: user.Email}).First(new(models.User)).RowsAffected; count > 0 {
 		error = errEmailAlreadyRegistered
+		//only check first address because client only sends one location on register
+	} else if _, err := GetValidLookup(user.Locations[0].Osm_id, user.Locations[0].Osm_type); err != nil {
+		error = errLocationNotFound
 	} else {
 		error = "NO_ERROR"
 	}
@@ -56,11 +59,6 @@ func RegisterUser(ctx *fiber.Ctx) error {
 	//		return ctx.JSON(ustatus{StatusCode: errLocationNotFound})
 	//	}
 	//}
-
-	//only check first address because client only sends one location on register
-	if _, err := GetValidLookup(user.Locations[0].Osm_id, user.Locations[0].Osm_type); err != nil {
-		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(uerror{ErrorCode: errLocationNotFound})
-	}
 
 	user.Salt = generateRandomSalt()
 	// TODO Hashing the password with a random salt

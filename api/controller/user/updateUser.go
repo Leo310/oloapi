@@ -21,6 +21,12 @@ func validateUpdate(user *models.User) errorCode {
 	} else if count := db.DB.Where(&models.User{Email: user.Email}).First(new(models.User)).RowsAffected; count > 0 {
 		error = errEmailAlreadyRegistered
 	} else {
+		for i := range user.Locations {
+			if _, err := GetValidLookup(user.Locations[i].Osm_id, user.Locations[i].Osm_type); err != nil {
+				error = errLocationNotFound
+				return error
+			}
+		}
 		error = "NO_ERROR"
 	}
 	return error
