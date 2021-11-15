@@ -11,7 +11,6 @@ import (
 )
 
 // CreateServer creates a new Fiber Instance
-
 func createServer() *fiber.App {
 	app := fiber.New()
 
