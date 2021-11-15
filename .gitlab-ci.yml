@@ -56,7 +56,7 @@ unit_tests:
   script:
     - cd ./api
     - go get gotest.tools/gotestsum
-    - gotestsum --junitfile ../tests/report.xml --format testname --packages $(go list ./...)
+    - gotestsum --junitfile ../tests/unitreport/report.xml --format testname --packages $(go list ./...)
   artifacts:
     when: always #upldoads even when job fails
     reports:
