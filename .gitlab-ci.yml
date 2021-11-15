@@ -16,7 +16,15 @@ docker_build:
   # Default branch leaves tag empty (= latest tag)
   # All other branches are tagged with the escaped branch name (commit ref slug)
   script:
-    - docker build --pull -t "docker.institut4000.gmbh/olo/oloapi" .
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        tag=""
+        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+      else
+        tag=":$CI_COMMIT_REF_SLUG"
+        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+      fi
+    - docker build --pull -t "docker.institut4000.gmbh/olo/oloapi${tag}" .
   
   # Run this job in a branch where a Dockerfile exists
   rules:
@@ -48,7 +56,7 @@ unit_tests:
   script:
     - cd ./api
     - go get gotest.tools/gotestsum
-    - gotestsum --junitfile ../tests/report.xml --format testname --packages $(go list ./...)
+    - gotestsum --junitfile ../tests/unitreport/report.xml --format testname --packages $(go list ./...)
   artifacts:
     when: always #upldoads even when job fails
     reports:
