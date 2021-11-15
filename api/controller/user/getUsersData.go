@@ -17,6 +17,7 @@ type apiUsers struct {
 	Rating       float32   `json:"rating"`
 }
 
+// GetUsersData return multiple user data specified by a limit to an unauthorized user
 func GetUsersData(ctx *fiber.Ctx) error {
 	limitString := ctx.Query("limit", "10") //default return 10 users
 	limit, err := strconv.Atoi(limitString)

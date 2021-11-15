@@ -22,7 +22,7 @@ func validateRegister(user *models.User) errorCode {
 	} else if count := db.DB.Where(&models.User{Email: user.Email}).First(new(models.User)).RowsAffected; count > 0 {
 		error = errEmailAlreadyRegistered
 		//only check first address because client only sends one location on register
-	} else if _, err := GetValidLookup(user.Locations[0].Osm_id, user.Locations[0].Osm_type); err != nil {
+	} else if _, err := getValidLookup(user.Locations[0].OsmID, user.Locations[0].OsmType); err != nil {
 		error = errLocationNotFound
 	} else {
 		error = "NO_ERROR"
@@ -39,6 +39,7 @@ func generateRandomSalt() string {
 	return salt
 }
 
+// RegisterUser sign up a user
 func RegisterUser(ctx *fiber.Ctx) error {
 	user := new(models.User)
 

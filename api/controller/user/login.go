@@ -8,6 +8,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// LoginUser user signin
 func LoginUser(ctx *fiber.Ctx) error {
 	type LoginInput struct {
 		Email    string `json:"email"`

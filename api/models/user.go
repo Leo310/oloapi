@@ -18,9 +18,10 @@ type User struct {
 	Locations    []Location `json:"locations" gorm:"constraint:OnDelete:CASCADE;"`
 }
 
+// Location represents a Location schema
 type Location struct {
 	Base
 	UserUUID uuid.UUID
-	Osm_id   int64  `json:"osm_id"`
-	Osm_type string `json:"osm_type"`
+	OsmID    int64  `json:"osm_id"`
+	OsmType  string `json:"osm_type"`
 }

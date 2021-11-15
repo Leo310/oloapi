@@ -10,27 +10,27 @@ import (
 	"strings"
 )
 
-type GeoAddress struct {
-	House_number string `json:"house_number"`
-	Road         string `json:"road"`
-	Suburb       string `json:"suburb"`
-	Borough      string `json:"borough"`
-	City         string `json:"city"`
-	State        string `json:"state"`
-	Postcode     string `json:"postcode"`
-	Country      string `json:"country"`
-	Country_code string `json:"country_code"`
+type geoAddress struct {
+	HouseNumber string `json:"house_number"`
+	Road        string `json:"road"`
+	Suburb      string `json:"suburb"`
+	Borough     string `json:"borough"`
+	City        string `json:"city"`
+	State       string `json:"state"`
+	Postcode    string `json:"postcode"`
+	Country     string `json:"country"`
+	CountryCode string `json:"country_code"`
 }
 
 type geoLocations struct {
-	Lat      string     `json:"lat"`
-	Lon      string     `json:"lon"`
-	Osm_id   int64      `json:"osm_id"`
-	Osm_type string     `json:"osm_type"`
-	Address  GeoAddress `json:"address"`
+	Lat     string     `json:"lat"`
+	Lon     string     `json:"lon"`
+	OsmID   int64      `json:"osm_id"`
+	OsmType string     `json:"osm_type"`
+	Address geoAddress `json:"address"`
 }
 
-func GetValidAddress(street string, housenumber string, city string) ([]geoLocations, error) {
+func getValidAddress(street string, housenumber string, city string) ([]geoLocations, error) {
 	url := "https://nominatim.openstreetmap.org/search?addressdetails=1&format=json&street=" + url.QueryEscape(housenumber+" ") + url.QueryEscape(street) + "&city=" + url.QueryEscape(city)
 	// url := "https://nominatim.openstreetmap.org/search?addressdetails=1&format=json&street=" + url.QueryEscape(street)
 
@@ -58,14 +58,13 @@ func GetValidAddress(street string, housenumber string, city string) ([]geoLocat
 	}
 	if len(locations) == 0 {
 		return []geoLocations{}, errors.New("no locations found")
-	} else {
-		return locations, nil
 	}
+	return locations, nil
 }
 
-func GetValidLookup(osm_id int64, osm_type string) ([]geoLocations, error) {
+func getValidLookup(osmID int64, osmType string) ([]geoLocations, error) {
 	// TODO can verify list of osm_id (up to 50)
-	url := "https://nominatim.openstreetmap.org/lookup?format=json&addressdetails=1&osm_ids=" + url.QueryEscape(strings.ToUpper(osm_type[0:1])+strconv.Itoa(int(osm_id)))
+	url := "https://nominatim.openstreetmap.org/lookup?format=json&addressdetails=1&osm_ids=" + url.QueryEscape(strings.ToUpper(osmType[0:1])+strconv.Itoa(int(osmID)))
 	// url := "https://nominatim.openstreetmap.org/search?addressdetails=1&format=json&street=" + url.QueryEscape(street)
 
 	method := "GET"
@@ -92,7 +91,6 @@ func GetValidLookup(osm_id int64, osm_type string) ([]geoLocations, error) {
 	}
 	if len(locations) == 0 {
 		return []geoLocations{}, errors.New("no locations found")
-	} else {
-		return locations, nil
 	}
+	return locations, nil
 }

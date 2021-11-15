@@ -20,10 +20,11 @@ type apiProfile struct {
 
 type apiLocation struct {
 	UserUUID uuid.UUID `json:"-"`
-	Osm_id   int64     `json:"osm_id"`
-	Osm_type string    `json:"osm_type"`
+	OsmID    int64     `json:"osm_id"`
+	OsmType  string    `json:"osm_type"`
 }
 
+// GetProfileData return data of an user who is logged in
 func GetProfileData(ctx *fiber.Ctx) error {
 	uuid := ctx.Locals("uuid")
 

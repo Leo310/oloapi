@@ -22,7 +22,7 @@ func validateUpdate(user *models.User) errorCode {
 		error = errEmailAlreadyRegistered
 	} else {
 		for i := range user.Locations {
-			if _, err := GetValidLookup(user.Locations[i].Osm_id, user.Locations[i].Osm_type); err != nil {
+			if _, err := getValidLookup(user.Locations[i].OsmID, user.Locations[i].OsmType); err != nil {
 				error = errLocationNotFound
 				return error
 			}
@@ -32,6 +32,7 @@ func validateUpdate(user *models.User) errorCode {
 	return error
 }
 
+// UpdateUser updates User data of authorized user
 func UpdateUser(ctx *fiber.Ctx) error {
 	user := new(models.User)
 	var err error

@@ -6,7 +6,7 @@ import (
 	valid "github.com/asaskevich/govalidator"
 )
 
-func validUuid(uuid string) bool {
+func validUUID(uuid string) bool {
 	return valid.IsUUID(uuid)
 }
 

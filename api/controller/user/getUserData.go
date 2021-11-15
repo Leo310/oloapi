@@ -17,9 +17,10 @@ type apiUser struct {
 	Rating       float32   `json:"rating"`
 }
 
+// GetUserData return user data of an specific user to an unauthorized user
 func GetUserData(ctx *fiber.Ctx) error {
 	uuid := ctx.Params("uuid") //default return 10 users
-	if !validUuid(uuid) {
+	if !validUUID(uuid) {
 		return ctx.Status(fiber.StatusBadRequest).JSON(uerror{ErrorCode: errReviewInput})
 	}
 

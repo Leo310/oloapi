@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	access_token_time  time.Duration = 15 * time.Minute
-	refresh_token_time time.Duration = 30 * 24 * time.Hour
+	accessTokenTime  time.Duration = 15 * time.Minute
+	refreshTokenTime time.Duration = 30 * 24 * time.Hour
 )
 
 type claims struct {
@@ -29,7 +29,7 @@ func generateAccessClaims(uuid string) string {
 	claim := claims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    uuid,
-			ExpiresAt: t.Add(access_token_time).Unix(),
+			ExpiresAt: t.Add(accessTokenTime).Unix(),
 			Subject:   "access_token",
 			IssuedAt:  t.Unix(),
 		},
@@ -50,7 +50,7 @@ func generateRefreshClaims(uuid string) string {
 	refreshClaim := claims{
 		StandardClaims: jwt.StandardClaims{
 			Issuer:    uuid,
-			ExpiresAt: t.Add(refresh_token_time).Unix(),
+			ExpiresAt: t.Add(refreshTokenTime).Unix(),
 			Subject:   "refresh_token",
 			IssuedAt:  t.Unix(),
 		},

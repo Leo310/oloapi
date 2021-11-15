@@ -37,19 +37,19 @@ func Authenticator() func(*fiber.Ctx) error {
 			// expired at checked by ParseWithClaims()
 			ctx.Locals("uuid", claims.Issuer)
 			return ctx.Next()
+		}
+
+		ve := err.(*jwt.ValidationError)
+		//filtering exact error
+		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+			// this is not even a token, we should delete the cookies here
+			return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenBad})
+		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+			// Token is either expired or not active yet
+			return ctx.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenNotActiveExpired})
 		} else {
-			ve := err.(*jwt.ValidationError)
-			//filtering exact error
-			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				// this is not even a token, we should delete the cookies here
-				return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenBad})
-			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
-				// Token is either expired or not active yet
-				return ctx.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenNotActiveExpired})
-			} else {
-				// cannot handle this token
-				return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenBad})
-			}
+			// cannot handle this token
+			return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenBad})
 		}
 	}
 }
