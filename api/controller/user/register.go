@@ -33,6 +33,8 @@ func validateRegister(user *models.User) errorCode {
 func generateRandomSalt() string {
 	const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%?"
 	var salt string
+	// print to see if test coverage is shown in diff just for test 3
+	log.Print(salt)
 	for i := 0; i < 8; i++ {
 		salt += string(characters[rand.Intn(len(characters))])
 	}
