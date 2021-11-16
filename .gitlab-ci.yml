@@ -10,8 +10,8 @@ default:
     - docker:dind
 
 .only_default: &only_default
-  only:
-    - merge_requests
+  rules:
+    - if: $CI_MERGE_REQUEST_APPROVED
     
 docker_build:
   <<: *only_default
@@ -58,7 +58,7 @@ linter:
     - golint -set_exit_status $(go list ./...)
 
 unit_tests:
-
+  <<: *only_default
   image: golang:latest
   stage: test
   script:
