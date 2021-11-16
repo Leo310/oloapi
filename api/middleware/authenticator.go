@@ -3,6 +3,9 @@ package middleware
 import (
 	"os"
 
+	db "oloapi/api/database"
+	"oloapi/api/models"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
@@ -34,6 +37,10 @@ func Authenticator() func(*fiber.Ctx) error {
 
 		//parsedToken is nil when authorization header is empty string
 		if parsedToken != nil && parsedToken.Valid {
+			// check if user still exsits in db
+			if count := db.DB.Where("uuid = ?", claims.Issuer).First(&models.User{}).RowsAffected; count == 0 {
+				return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenOfNonexistingUser})
+			}
 			// expired at checked by ParseWithClaims()
 			ctx.Locals("uuid", claims.Issuer)
 			return ctx.Next()

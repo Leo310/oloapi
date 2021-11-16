@@ -12,10 +12,11 @@ const (
 	errServerInternal errorCode = "INTERNAL"
 	errSomeError                = "SOME_ERROR"
 
-	errTokenUnavailable      = "TOKEN_UNAVAILABLE"
-	errTokenExpired          = "TOKEN_EXPIRED"
-	errTokenNotActiveExpired = "TOKEN_NOT_ACTIVE_EXPIRED"
-	errTokenBad              = "TOKEN_INVALID"
+	errTokenUnavailable       = "TOKEN_UNAVAILABLE"
+	errTokenExpired           = "TOKEN_EXPIRED"
+	errTokenNotActiveExpired  = "TOKEN_NOT_ACTIVE_EXPIRED"
+	errTokenBad               = "TOKEN_INVALID"
+	errTokenOfNonexistingUser = "TOKEN_OF_NONEXISTING_USER"
 )
 
 // TODO: puts enum in namespace
