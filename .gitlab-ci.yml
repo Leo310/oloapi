@@ -10,7 +10,7 @@ default:
     - docker:dind
 
 .only_default: &only_default
-  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_COMMIT_BRANCH == "dev"'
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "dev"'
     
 docker_build:
   stage: build
