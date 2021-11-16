@@ -6,12 +6,15 @@ stages:
 default:
   # Use the official docker image.
   image: docker/compose:latest
-  only:
-    - merge_requests
   services:
     - docker:dind
-  
+
+.only_default: &only_default
+  only:
+    - merge_requests
+    
 docker_build:
+  <<: *only_default
   stage: build
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
@@ -36,6 +39,7 @@ docker_build:
 
 
 postman_tests:
+  <<: *only_default
   stage: test
   before_script:
     - docker-compose up -d
@@ -45,6 +49,7 @@ postman_tests:
     - docker-compose down
 
 linter:
+  <<: *only_default
   image: golang:latest
   stage: test
   script:
@@ -53,6 +58,7 @@ linter:
     - golint -set_exit_status $(go list ./...)
 
 unit_tests:
+
   image: golang:latest
   stage: test
   script:
@@ -65,6 +71,7 @@ unit_tests:
       junit: tests/unitreport/report.xml
 
 code_coverage:
+  <<: *only_default
   image: golang:latest
   stage: test
   script:
@@ -80,6 +87,7 @@ code_coverage:
       cobertura: tests/coverage/coverage.xml
 
 docker_deploy_stage:
+  <<: *only_default
   stage: deploy_stage
   script:  
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
