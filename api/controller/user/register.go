@@ -32,7 +32,6 @@ func validateRegister(user *models.User) errorCode {
 
 func generateRandomSalt() string {
 	const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%?"
-	//for checking code coverage report adding this commit
 	var salt string
 	for i := 0; i < 8; i++ {
 		salt += string(characters[rand.Intn(len(characters))])
