@@ -1,3 +1,4 @@
+# comment to remove endles checking pipeline status
 stages:
   - build
   - test
