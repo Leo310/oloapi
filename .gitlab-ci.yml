@@ -10,11 +10,9 @@ default:
     - docker:dind
 
 .only_default: &only_default
-  rules:
-    - if: $CI_MERGE_REQUEST_APPROVED
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     
 docker_build:
-  <<: *only_default
   stage: build
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
@@ -33,13 +31,13 @@ docker_build:
   
   # Run this job in a branch where a Dockerfile exists
   rules:
+    - <<: *only_default
     - if: $CI_COMMIT_BRANCH
       exists:
         - Dockerfile
 
 
 postman_tests:
-  <<: *only_default
   stage: test
   before_script:
     - docker-compose up -d
@@ -47,18 +45,20 @@ postman_tests:
     - docker run --network host -v $(pwd)/tests:/etc/newman -t postman/newman:latest run "oLo.postman_collection.json" --folder user
   after_script:
     - docker-compose down
+  rules:
+    - <<: *only_default
 
 linter:
-  <<: *only_default
   image: golang:latest
   stage: test
   script:
     - cd api
     - go get -u golang.org/x/lint/golint
     - golint -set_exit_status $(go list ./...)
+  rules:
+    - <<: *only_default
 
 unit_tests:
-  <<: *only_default
   image: golang:latest
   stage: test
   script:
@@ -69,9 +69,10 @@ unit_tests:
     when: always #upldoads even when job fails
     reports:
       junit: tests/unitreport/report.xml
+  rules:
+    - <<: *only_default
 
 code_coverage:
-  <<: *only_default
   image: golang:latest
   stage: test
   script:
@@ -85,9 +86,10 @@ code_coverage:
       - tests/coverage/coverage.html
     reports:
       cobertura: tests/coverage/coverage.xml
+  rules:
+    - <<: *only_default
 
 docker_deploy_stage:
-  <<: *only_default
   stage: deploy_stage
   script:  
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
@@ -100,3 +102,5 @@ docker_deploy_stage:
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
       fi
     - docker push "$CI_REGISTRY_IMAGE${tag}"
+  rules:
+    - <<: *only_default
