@@ -10,7 +10,7 @@ default:
     - docker:dind
 
 .only_default: &only_default
-  if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_COMMIT_BRANCH == "dev"'
     
 docker_build:
   stage: build
@@ -76,7 +76,7 @@ code_coverage:
   stage: test
   script:
     - cd ./api
-    - go get github.com/t-yuki/gocover-cobertura
+    - go get github.com/boumenot/gocover-cobertura
     - go test -coverprofile=../tests/coverage/coverage.txt -covermode count $(go list ./...)
     - gocover-cobertura < ../tests/coverage/coverage.txt > ../tests/coverage/coverage.xml
     - go tool cover -html=../tests/coverage/coverage.txt -o ../tests/coverage/coverage.html
