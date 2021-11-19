@@ -21,6 +21,12 @@ const (
 	errEmailInvalid    = "EMAIL_INVALID"
 	errNameInvalid     = "NAME_INVALID"
 	errPasswordInvalid = "PASSWORD_INVALID"
+
+	errTokenUnavailable       = "TOKEN_UNAVAILABLE"
+	errTokenExpired           = "TOKEN_EXPIRED"
+	errTokenNotActiveExpired  = "TOKEN_NOT_ACTIVE_EXPIRED"
+	errTokenBad               = "TOKEN_INVALID"
+	errTokenOfNonexistingUser = "TOKEN_OF_NONEXISTING_USER"
 )
 
 // TODO: puts enum in namespace

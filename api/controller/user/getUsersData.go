@@ -1,7 +1,6 @@
 package user
 
 import (
-	db "oloapi/api/database"
 	"oloapi/api/models"
 	"strconv"
 
@@ -18,7 +17,7 @@ type apiUsers struct {
 }
 
 // GetUsersData return multiple user data specified by a limit to an unauthorized user
-func GetUsersData(ctx *fiber.Ctx) error {
+func (userenv *Userenv) GetUsersData(ctx *fiber.Ctx) error {
 	limitString := ctx.Query("limit", "10") //default return 10 users
 	limit, err := strconv.Atoi(limitString)
 	if err != nil {
@@ -26,7 +25,7 @@ func GetUsersData(ctx *fiber.Ctx) error {
 	}
 
 	var users []apiUsers
-	db.DB.Model(&models.User{}).Limit(limit).Find(&users)
+	userenv.DB.Model(&models.User{}).Limit(limit).Find(&users)
 
 	//dont return locations
 	// for index, user := range users {
