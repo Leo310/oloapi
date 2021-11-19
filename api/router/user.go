@@ -5,7 +5,7 @@ import (
 )
 
 // setupUserRoutes func sets up all the user routes
-func setupUserRoutes(apienv *env.Api) {
+func setupUserRoutes(apienv *env.API) {
 	userRouter := apirouter.Group("/user")
 	// PRIVATE handles all the private user routes that requires authentication
 	userPrivRouter := privrouter.Group("/user")

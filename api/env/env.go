@@ -12,8 +12,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO implement interface methods
-type Api struct {
+// API contains whole environment as interfaces
+type API struct {
 	User interface {
 		Authenticator() func(*fiber.Ctx) error
 		RegisterUser(*fiber.Ctx) error
@@ -32,13 +32,14 @@ type Api struct {
 	}
 }
 
-func (env *Api) Setup() error {
+// Setup initializes whole enviornment
+func (env *API) Setup() error {
 	// TODO why working in olo image? shouldnt because executing oloapi in home directory instead of directory with .env file
 	if err := godotenv.Load(); err != nil {
 		return errors.New("error loading env file")
 	}
 	env.Database = &database.DBenv{
-		Ip:       os.Getenv("PSQL_IP"),
+		IP:       os.Getenv("PSQL_IP"),
 		Port:     os.Getenv("PSQL_PORT"),
 		User:     os.Getenv("PSQL_USER"),
 		Password: os.Getenv("PSQL_PASS"),

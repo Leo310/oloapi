@@ -13,13 +13,13 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// ConnectToDB connects the server with database
+// Connect connects the server with database
 func (dbenv *DBenv) Connect() *gorm.DB {
 
 	// creating database
 	// when PGPASSWORD is set we dont need to provide a password interactively
 	os.Setenv("PGPASSWORD", dbenv.Password)
-	cmd := exec.Command("createdb", "-p", dbenv.Port, "-h", dbenv.Ip, "-U", dbenv.User, "-e", dbenv.Name)
+	cmd := exec.Command("createdb", "-p", dbenv.Port, "-h", dbenv.IP, "-U", dbenv.User, "-e", dbenv.Name)
 	var out bytes.Buffer
 	//stores output of cmd after run in out buffer so that we can print it afterwards
 	cmd.Stdout = &out
@@ -32,7 +32,7 @@ func (dbenv *DBenv) Connect() *gorm.DB {
 
 	//connecting to postgres database
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Kolkata",
-		dbenv.Ip, dbenv.User, dbenv.Password, dbenv.Name, dbenv.Port)
+		dbenv.IP, dbenv.User, dbenv.Password, dbenv.Name, dbenv.Port)
 
 	log.Print("Connecting to Postgres DB...")
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})

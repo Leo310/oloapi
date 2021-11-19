@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Userenv describes whole user environment
 type Userenv struct {
 	DB                     *gorm.DB
 	JwtKey                 []byte

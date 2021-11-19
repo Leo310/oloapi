@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// Setup environmet
-	apienv := env.Api{}
+	apienv := env.API{}
 	if err := apienv.Setup(); err != nil {
 		log.Fatal("Env couldnt load\n", err)
 	}
