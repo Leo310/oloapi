@@ -5,7 +5,8 @@ import (
 	"testing"
 )
 
-func TestGenerateRandomSalt(t *testing.T) {
+// Testing generate random salt
+func (userenv *Userenv) TestGenerateRandomSalt(t *testing.T) {
 	r, _ := regexp.Compile(`^[a-zA-Z0-9$%\?]{8}$`)
 	for i := 0; i < 1000; i++ {
 		salt := generateRandomSalt()
@@ -21,3 +22,10 @@ func BenchmarkGenerateRandomSalt(b *testing.B) {
 		generateRandomSalt()
 	}
 }
+
+// Testing user validation
+// func TestUserValidation(t *testing.T) {
+// 	inputoutput := []struct {
+
+// 	}
+// }

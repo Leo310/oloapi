@@ -1,22 +1,22 @@
 package router
 
 import (
-	"oloapi/api/controller/user"
+	"oloapi/api/env"
 )
 
 // setupUserRoutes func sets up all the user routes
-func setupUserRoutes() {
+func setupUserRoutes(apienv *env.API) {
 	userRouter := apirouter.Group("/user")
 	// PRIVATE handles all the private user routes that requires authentication
 	userPrivRouter := privrouter.Group("/user")
 
-	userRouter.Post("/register", user.RegisterUser) // Sign Up a user
-	userRouter.Post("/login", user.LoginUser)       // Sign In a user
-	userRouter.Get("/:uuid", user.GetUserData)
-	userRouter.Get("/", user.GetUsersData)
+	userRouter.Post("/register", apienv.User.RegisterUser) // Sign Up a user
+	userRouter.Post("/login", apienv.User.LoginUser)       // Sign In a user
+	userRouter.Get("/:uuid", apienv.User.GetUserData)
+	userRouter.Get("/", apienv.User.GetUsersData)
 
-	userPrivRouter.Put("/", user.UpdateUser)
-	userPrivRouter.Delete("/", user.DeleteUser)
-	userPrivRouter.Get("/", user.GetProfileData)
-	userPrivRouter.Get("/refreshTokens", user.RefreshTokens) // returns a new access_token
+	userPrivRouter.Put("/", apienv.User.UpdateUser)
+	userPrivRouter.Delete("/", apienv.User.DeleteUser)
+	userPrivRouter.Get("/", apienv.User.GetProfileData)
+	userPrivRouter.Get("/refreshTokens", apienv.User.RefreshTokens) // returns a new access_token
 }

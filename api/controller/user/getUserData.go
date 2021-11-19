@@ -1,7 +1,6 @@
 package user
 
 import (
-	db "oloapi/api/database"
 	"oloapi/api/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -18,14 +17,14 @@ type apiUser struct {
 }
 
 // GetUserData return user data of an specific user to an unauthorized user
-func GetUserData(ctx *fiber.Ctx) error {
+func (userenv *Userenv) GetUserData(ctx *fiber.Ctx) error {
 	uuid := ctx.Params("uuid") //default return 10 users
 	if !validUUID(uuid) {
 		return ctx.Status(fiber.StatusBadRequest).JSON(uerror{ErrorCode: errReviewInput})
 	}
 
 	user := new(apiUser)
-	if err := db.DB.Model(&models.User{}).First(&user, "uuid = ?", uuid).Error; err != nil {
+	if err := userenv.DB.Model(&models.User{}).First(&user, "uuid = ?", uuid).Error; err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(uerror{ErrorCode: errUserNotFound})
 	}
 

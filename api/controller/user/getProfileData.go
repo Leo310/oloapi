@@ -1,7 +1,6 @@
 package user
 
 import (
-	db "oloapi/api/database"
 	"oloapi/api/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -25,14 +24,14 @@ type apiLocation struct {
 }
 
 // GetProfileData return data of an user who is logged in
-func GetProfileData(ctx *fiber.Ctx) error {
+func (userenv *Userenv) GetProfileData(ctx *fiber.Ctx) error {
 	uuid := ctx.Locals("uuid")
 
 	user := new(apiProfile)
 	// could be cleaner with preload but doesnt work because of bug https://github.com/go-gorm/gorm/issues/4015
-	db.DB.Model(&models.User{}).Where("uuid = ?", uuid).First(user)
+	userenv.DB.Model(&models.User{}).Where("uuid = ?", uuid).First(user)
 	// TODO better solution with association
-	db.DB.Model(&models.Location{}).Where("user_uuid = ?", uuid).Find(&user.Locations)
+	userenv.DB.Model(&models.Location{}).Where("user_uuid = ?", uuid).Find(&user.Locations)
 
 	return ctx.JSON(user)
 }

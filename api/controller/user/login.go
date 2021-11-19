@@ -1,7 +1,6 @@
 package user
 
 import (
-	db "oloapi/api/database"
 	"oloapi/api/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,7 +8,7 @@ import (
 )
 
 // LoginUser user signin
-func LoginUser(ctx *fiber.Ctx) error {
+func (userenv *Userenv) LoginUser(ctx *fiber.Ctx) error {
 	type LoginInput struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -23,7 +22,7 @@ func LoginUser(ctx *fiber.Ctx) error {
 
 	// check if a user exists
 	user := new(models.User)
-	if res := db.DB.Where(
+	if res := userenv.DB.Where(
 		&models.User{Email: input.Email}).First(&user); res.RowsAffected <= 0 {
 		return ctx.Status(fiber.StatusTeapot).JSON(uerror{ErrorCode: errCredentialsInvalid})
 	}
@@ -34,6 +33,6 @@ func LoginUser(ctx *fiber.Ctx) error {
 	}
 
 	// setting up the authorization cookies
-	accessToken, refreshToken := generateTokens(user.UUID.String())
+	accessToken, refreshToken := userenv.generateTokens(user.UUID.String())
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"token_type": "Bearer", "access_token": accessToken, "refresh_token": refreshToken})
 }

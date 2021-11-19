@@ -1,30 +1,20 @@
-package middleware
+package user
 
 import (
-	"os"
-
-	db "oloapi/api/database"
 	"oloapi/api/models"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
 
-var jwtKey = []byte(os.Getenv("PRIV_KEY"))
-
-type claims struct {
-	jwt.StandardClaims
-}
-
 // Authenticator returns a middleware which secures all the private routes
-// TODO check if user with this uuid still exists. Because user could delete himself and still send private requests with his valid tokens
-func Authenticator() func(*fiber.Ctx) error {
+func (userenv *Userenv) Authenticator() func(*fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		claims := new(claims)
 
 		authHeaderContent := ctx.Get("Authorization", "no_token")
 		if authHeaderContent == "no_token" {
-			return ctx.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenUnavailable})
+			return ctx.Status(fiber.StatusUnauthorized).JSON(uerror{ErrorCode: errTokenUnavailable})
 		}
 		length := len(authHeaderContent)
 		// remove Bearer string at the beginning of Authorization header
@@ -32,14 +22,14 @@ func Authenticator() func(*fiber.Ctx) error {
 
 		parsedToken, err := jwt.ParseWithClaims(token, claims,
 			func(token *jwt.Token) (interface{}, error) {
-				return jwtKey, nil
+				return userenv.JwtKey, nil
 			})
 
 		//parsedToken is nil when authorization header is empty string
 		if parsedToken != nil && parsedToken.Valid {
 			// check if user still exsits in db
-			if count := db.DB.Where("uuid = ?", claims.Issuer).First(&models.User{}).RowsAffected; count == 0 {
-				return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenOfNonexistingUser})
+			if count := userenv.DB.Where("uuid = ?", claims.Issuer).First(&models.User{}).RowsAffected; count == 0 {
+				return ctx.Status(fiber.StatusForbidden).JSON(uerror{ErrorCode: errTokenOfNonexistingUser})
 			}
 			// expired at checked by ParseWithClaims()
 			ctx.Locals("uuid", claims.Issuer)
@@ -50,13 +40,13 @@ func Authenticator() func(*fiber.Ctx) error {
 		//filtering exact error
 		if ve.Errors&jwt.ValidationErrorMalformed != 0 {
 			// this is not even a token, we should delete the cookies here
-			return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenBad})
+			return ctx.Status(fiber.StatusForbidden).JSON(uerror{ErrorCode: errTokenBad})
 		} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
 			// Token is either expired or not active yet
-			return ctx.Status(fiber.StatusUnauthorized).JSON(merror{ErrorCode: errTokenNotActiveExpired})
+			return ctx.Status(fiber.StatusUnauthorized).JSON(uerror{ErrorCode: errTokenNotActiveExpired})
 		} else {
 			// cannot handle this token
-			return ctx.Status(fiber.StatusForbidden).JSON(merror{ErrorCode: errTokenBad})
+			return ctx.Status(fiber.StatusForbidden).JSON(uerror{ErrorCode: errTokenBad})
 		}
 	}
 }
