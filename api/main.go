@@ -13,7 +13,7 @@ func main() {
 	// Setup environmet
 	apienv := env.API{}
 	if err := apienv.Setup(); err != nil {
-		log.Fatal("Env couldnt load\n", err)
+		log.Fatal("Env couldnt load: ", err)
 	}
 
 	// CreateServer creates a new Fiber Instance

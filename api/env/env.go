@@ -5,6 +5,7 @@ import (
 	"oloapi/api/controller/user"
 	"oloapi/api/database"
 	"os"
+	"path"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -34,9 +35,14 @@ type API struct {
 
 // Setup initializes whole enviornment
 func (env *API) Setup() error {
-	// TODO why working in olo image? shouldnt because executing oloapi in home directory instead of directory with .env file
-	if err := godotenv.Load(); err != nil {
-		return errors.New("error loading env file")
+	// checks which env file there is in env folder and laods it
+	envPath := path.Join(os.Getenv("GOPATH"), "src/oloapi/api/env/.env")
+	if err := godotenv.Load(envPath + "local"); err != nil {
+		if err = godotenv.Load(envPath + "deploy"); err != nil {
+			if err = godotenv.Load(envPath + "stage"); err != nil {
+				return errors.New("no env file found (supported: .envlocal, .envstage, .envdeploy)")
+			}
+		}
 	}
 	env.Database = &database.DBenv{
 		IP:       os.Getenv("PSQL_IP"),
