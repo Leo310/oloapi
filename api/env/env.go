@@ -38,8 +38,8 @@ func (env *API) Setup() error {
 	// checks which env file there is in env folder and laods it
 	envPath := path.Join(os.Getenv("GOPATH"), "src/oloapi/api/env/.env")
 	if err := godotenv.Load(envPath + "local"); err != nil {
-		if err = godotenv.Load(envPath + "stage"); err != nil {
-			if err = godotenv.Load(envPath + "deploy"); err != nil {
+		if err = godotenv.Load(envPath + "deploy"); err != nil {
+			if err = godotenv.Load(envPath + "stage"); err != nil {
 				return errors.New("no env file found (supported: .envlocal, .envstage, .envdeploy)")
 			}
 		}
